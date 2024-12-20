@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".login" >
+
+    <EditText
+        android:id="@+id/etSUEmail"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="148dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/rounded_box"
+        android:hint="input your email"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        android:textColorHint="#808080"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etSUPhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/rounded_box"
+        android:hint="xxx-xxxx-xxxx"
+        android:inputType="number"
+        android:padding="10dp"
+        android:textColorHint="#808080"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintStart_toStartOf="@+id/etSUEmail"
+        app:layout_constraintTop_toBottomOf="@+id/etSUEmail" />
+
+    <EditText
+        android:id="@+id/etSUPassword"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/rounded_box"
+        android:hint="input password"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textColorHint="#808080"
+        app:layout_constraintEnd_toEndOf="@+id/etSUPhoneNumber"
+        app:layout_constraintStart_toStartOf="@+id/etSUPhoneNumber"
+        app:layout_constraintTop_toBottomOf="@+id/etSUPhoneNumber" />
+
+    <EditText
+        android:id="@+id/etSUName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/rounded_box"
+        android:hint="input your name"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textColorHint="#808080"
+        app:layout_constraintEnd_toEndOf="@+id/etSUPassword"
+        app:layout_constraintStart_toStartOf="@+id/etSUPassword"
+        app:layout_constraintTop_toBottomOf="@+id/etSUPassword" />
+
+    <EditText
+        android:id="@+id/etSUBirthDate"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/rounded_box"
+        android:hint="yyyy-mm-dd"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textColorHint="#808080"
+        app:layout_constraintEnd_toEndOf="@+id/etSUName"
+        app:layout_constraintStart_toStartOf="@+id/etSUName"
+        app:layout_constraintTop_toBottomOf="@+id/etSUName" />
+
+    <EditText
+        android:id="@+id/etSUNationality"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/rounded_box"
+        android:hint="Input your nationality"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textColorHint="#808080"
+        app:layout_constraintEnd_toEndOf="@+id/etSUBirthDate"
+        app:layout_constraintStart_toStartOf="@+id/etSUBirthDate"
+        app:layout_constraintTop_toBottomOf="@+id/etSUBirthDate" />
+
+    <Button
+        android:id="@+id/btnSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/rounded_box"
+        android:text="Sign up"
+        app:layout_constraintEnd_toEndOf="@+id/etSUNationality"
+        app:layout_constraintHorizontal_bias="0.453"
+        app:layout_constraintStart_toStartOf="@+id/etSUNationality"
+        app:layout_constraintTop_toBottomOf="@+id/etSUNationality" />
+</androidx.constraintlayout.widget.ConstraintLayout>

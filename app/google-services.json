@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "714303745178",
+    "project_id": "projectahkir",
+    "storage_bucket": "projectahkir.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:714303745178:android:18fe8f111df6912abe8323",
+        "android_client_info": {
+          "package_name": "com.paba.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlWT3VbMwWXPpM23w4MpQGNHODaDUODFY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
