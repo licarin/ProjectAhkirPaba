@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.paba.project"
-    compileSdk = 35
+    compileSdk = 35 // Ubah dari 34 ke 35
 
     defaultConfig {
         applicationId = "com.paba.project"
-        minSdk = 35
-        targetSdk = 35
+        minSdk = 21 // Tetap gunakan API level yang sesuai untuk perangkat yang lebih lama
+        targetSdk = 34 // Anda dapat tetap menargetkan Android 14
         versionCode = 1
         versionName = "1.0"
 
@@ -35,6 +35,7 @@ android {
         jvmTarget = "11"
     }
 }
+
 
 dependencies {
 

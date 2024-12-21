@@ -1,11 +1,13 @@
 package com.paba.project
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,6 +17,7 @@ import com.google.firebase.firestore.firestore
 class login : AppCompatActivity() {
 
     var db = Firebase.firestore
+    lateinit var loginAlertDialog: Dialog
 
     fun auth (email: String, password: String) {
         db.collection("tbUser")
@@ -26,6 +29,7 @@ class login : AppCompatActivity() {
                     if (data?.get("password") == password) {
                         startActivity(Intent(this, home::class.java))
                     } else {
+                        loginAlertDialog.show()
                         Log.d("Firebase", "Password salah atau email salah")
                     }
                 }
@@ -41,6 +45,17 @@ class login : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        loginAlertDialog = Dialog(this)
+        loginAlertDialog.setContentView(R.layout.login_notif_alert)
+        loginAlertDialog.window?.setBackgroundDrawableResource(R.drawable.rounded_box)
+        loginAlertDialog.setCancelable(false)
+
+        var _btnOk = loginAlertDialog.findViewById<Button>(R.id.btnAlert)
+        _btnOk.setOnClickListener {
+            loginAlertDialog.dismiss()
+        }
+
 
         val _etEmail = findViewById<EditText>(R.id.etLEmail)
         val _etPassword = findViewById<EditText>(R.id.etLPasword)

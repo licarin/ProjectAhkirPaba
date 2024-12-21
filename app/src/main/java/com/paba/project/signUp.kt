@@ -18,6 +18,7 @@ class signUp : AppCompatActivity() {
     val DataUser = ArrayList<user>()
 
     var data: MutableList<Map<String, String>> = ArrayList()
+
     lateinit var _etSUEmail : EditText
     lateinit var _etSUPhone : EditText
     lateinit var _etSUPassword : EditText
@@ -56,6 +57,8 @@ class signUp : AppCompatActivity() {
             insets
         }
 
+
+
         _etSUEmail = findViewById(R.id.etSUEmail)
         _etSUPhone = findViewById(R.id.etSUPhoneNumber)
         _etSUPassword = findViewById(R.id.etSUPassword)
@@ -75,6 +78,7 @@ class signUp : AppCompatActivity() {
                 _etSUBirth.text.toString(),
                 _etSUNationality.text.toString()
             )
+            finish()
         }
     }
 }
