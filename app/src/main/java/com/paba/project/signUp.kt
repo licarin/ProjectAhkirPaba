@@ -1,9 +1,12 @@
 package com.paba.project
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -11,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import java.util.Calendar
 
 class signUp : AppCompatActivity() {
     var db = Firebase.firestore
@@ -58,14 +62,33 @@ class signUp : AppCompatActivity() {
         }
 
 
-
         _etSUEmail = findViewById(R.id.etSUEmail)
         _etSUPhone = findViewById(R.id.etSUPhoneNumber)
         _etSUPassword = findViewById(R.id.etSUPassword)
         _etSUName = findViewById(R.id.etSUName)
         _etSUBirth = findViewById(R.id.etSUBirthDate)
         _etSUNationality = findViewById(R.id.etSUNationality)
+        val _ivBack = findViewById<ImageView>(R.id.ivBackSignUP)
+        _ivBack.setOnClickListener {
+            finish()
+        }
 
+        _etSUBirth.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            // Tampilkan DatePickerDialog
+            DatePickerDialog(
+                this,
+                { _, selectedYear, selectedMonth, selectedDay ->
+                    // Update EditText dengan tanggal yang dipilih
+                    _etSUBirth.setText("$selectedYear-${selectedMonth + 1}-$selectedDay")
+                },
+                year, month, day
+            ).show()
+        }
         val _btnSignUp = findViewById<Button>(R.id.btnSignUp)
 
         _btnSignUp.setOnClickListener {

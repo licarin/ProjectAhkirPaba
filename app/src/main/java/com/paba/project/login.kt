@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -56,11 +58,19 @@ class login : AppCompatActivity() {
             loginAlertDialog.dismiss()
         }
 
-
+        val _tvSignUP = findViewById<TextView>(R.id.tvSignUP)
         val _etEmail = findViewById<EditText>(R.id.etLEmail)
         val _etPassword = findViewById<EditText>(R.id.etLPasword)
 
         val _btnLogin = findViewById<Button>(R.id.btnLogin)
+        val _ivBackLogin = findViewById<ImageView>(R.id.ivBackLogin)
+
+        _tvSignUP.setOnClickListener {
+            startActivity(Intent(this, signUp::class.java))
+        }
+        _ivBackLogin.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
 
 
         _btnLogin.setOnClickListener {
