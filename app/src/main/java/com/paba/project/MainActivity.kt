@@ -19,6 +19,11 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        val _btnBook = findViewById<Button>(R.id.buttonBook)
+        _btnBook.setOnClickListener {
+            startActivity(Intent(this, book_detail::class.java))
+        }
+
         val _btn = findViewById<Button>(R.id.btnToSignUp)
         _btn.setOnClickListener {
             startActivity(Intent(this, signUp::class.java))
