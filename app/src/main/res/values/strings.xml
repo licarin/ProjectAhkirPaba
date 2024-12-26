@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ProjectAhkir</string>
+    <string name="google_map_api_key">AIzaSyCdCz1POPyYoEGx4rl4iJkGWeZF30Cs0k0</string>
 </resources>
