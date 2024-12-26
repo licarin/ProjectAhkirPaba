@@ -71,7 +71,7 @@
                 android:clipToOutline="true"
                 android:contentDescription="Guide Photo"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_guide_photo"
+                android:src="@drawable/fatimah"
                 app:layout_constraintStart_toStartOf="@+id/aboutYourGuide"
                 app:layout_constraintTop_toBottomOf="@+id/aboutYourGuide" />
 
