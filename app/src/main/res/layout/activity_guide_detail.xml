@@ -165,12 +165,27 @@
                             android:background="#E2ECF5"
                             android:paddingVertical="4dp"
                             android:paddingHorizontal="8dp"
-                            android:text="1 Hour"
+                            android:text="1"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            app:layout_constraintEnd_toStartOf="@+id/tv_duration_value1"
+                            app:layout_constraintBottom_toBottomOf="@id/minusIcon"
+                            app:layout_constraintStart_toEndOf="@+id/minusIcon"
+                            app:layout_constraintTop_toTopOf="@+id/minusIcon" />
+
+                        <TextView
+                            android:id="@+id/tv_duration_value1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:background="#E2ECF5"
+                            android:paddingVertical="4dp"
+                            android:paddingHorizontal="12dp"
+                            android:text="Hour"
                             android:textStyle="bold"
                             android:gravity="center"
                             app:layout_constraintEnd_toStartOf="@+id/plusIcon"
                             app:layout_constraintBottom_toBottomOf="@id/minusIcon"
-                            app:layout_constraintStart_toEndOf="@+id/minusIcon"
+                            app:layout_constraintStart_toEndOf="@+id/tv_duration_value"
                             app:layout_constraintTop_toTopOf="@+id/minusIcon" />
 
                         <TextView
@@ -266,15 +281,27 @@
                     android:paddingVertical="16dp">
 
                     <TextView
-                        android:id="@+id/tvPrice"
+                        android:id="@+id/tvPriceLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rp 200.000"
+                        android:text="Rp "
                         android:textColor="@color/white"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="200000"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tvPriceLabel"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
