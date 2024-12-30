@@ -53,4 +53,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation (libs.play.services.maps)
     implementation ("com.midtrans:uikit:2.0.0-SANDBOX")
+    implementation("com.midtrans:uikit:1.34.1")
 }
