@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">ProjectAhkir</string>
     <string name="google_map_api_key">AIzaSyCdCz1POPyYoEGx4rl4iJkGWeZF30Cs0k0</string>
+    <string-array name="languages">
+        <item>English</item>
+        <item>Indonesian</item>
+        <item>Chinese</item>
+    </string-array>
 </resources>
