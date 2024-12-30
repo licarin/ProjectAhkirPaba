@@ -53,7 +53,7 @@ class book_payment : AppCompatActivity() {
         UiKitApi.getDefaultInstance().startPaymentUiFlow(
             this@book_payment, // Activity
             launcher, // ActivityResultLauncher
-            "d9b627bc-721f-4d0f-888c-1cc78f08d688" // Snap Token
+            "6ea7be8b-ff57-47bc-9499-ff620649c323" // Snap Token
         )
     }
 
