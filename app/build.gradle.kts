@@ -37,6 +37,9 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        dataBinding = true
+    }
 }
 
 
@@ -48,11 +51,13 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.database.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation (libs.play.services.maps)
-    implementation (libs.midtrans.uikit)
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
+    implementation ("com.midtrans:uikit:2.0.0-SANDBOX")
+    implementation("com.midtrans:uikit:1.34.1")
     implementation (libs.okhttp)
-    implementation (libs.gson)
+    implementation("com.google.code.gson:gson:2.10.1")
 }

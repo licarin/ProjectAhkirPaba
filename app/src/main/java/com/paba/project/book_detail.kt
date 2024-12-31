@@ -3,6 +3,8 @@ package com.paba.project
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -15,14 +17,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Calendar
+
 
 class book_detail : AppCompatActivity(), OnMapReadyCallback {
     private var mGoogleMap: GoogleMap? = null
@@ -48,7 +54,8 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, suggestions)
         autoCompleteTextView.setAdapter(adapter)
 
-        autoCompleteTextView.addTextChangedListener(object : TextWatcher {
+        // Define the TextWatcher separately for better control
+        val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -63,8 +70,52 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                 fetchSuggestions(s.toString(), adapter)
             }
 
-            override fun afterTextChanged(s: Editable?) {}
-        })
+            override fun afterTextChanged(s: Editable?) {
+                if (!s.isNullOrEmpty() && s.length > 5) {
+                    Log.d("AfterTextChangedDebug", "Triggering fetch for: ${s.toString()}")
+                    fetchCoordinatesFromFirebase(s.toString()) { latLng ->
+                        latLng?.let { location ->
+                            Log.d("AfterTextChangedDebug", "Coordinates received: $location")
+                            if (mGoogleMap != null) {
+                                runOnUiThread {
+                                    Log.d("AfterTextChangedDebug", "Updating map with location: $location")
+                                    mGoogleMap?.clear()
+                                    mGoogleMap?.addMarker(
+                                        MarkerOptions()
+                                            .position(location)
+                                            .title("Marker at ${s.toString()}")
+                                    )
+                                    mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f))
+                                }
+                            } else {
+                                Log.d("MapDebug", "GoogleMap is not ready yet.")
+                            }
+                        } ?: run {
+                            Log.d("LocationSearch", "Address not found or invalid for: ${s.toString()}")
+                        }
+                    }
+                }
+            }
+        }
+
+        // Update AutoCompleteTextView text on suggestion selection
+        autoCompleteTextView.setOnItemClickListener { parent, _, position, _ ->
+            val selectedSuggestion = parent.getItemAtPosition(position) as String
+
+            // Temporarily remove TextWatcher to avoid triggering it
+            autoCompleteTextView.removeTextChangedListener(textWatcher)
+
+            autoCompleteTextView.setText(selectedSuggestion)
+            autoCompleteTextView.dismissDropDown()
+
+            // Reattach the TextWatcher
+            autoCompleteTextView.addTextChangedListener(textWatcher)
+
+            Log.d("AutoCompleteDebug", "Suggestion selected: $selectedSuggestion")
+        }
+
+// Attach the TextWatcher
+        autoCompleteTextView.addTextChangedListener(textWatcher)
 
         val _etSUBirth = findViewById<TextInputEditText>(R.id.taskDateField2)
 
@@ -118,53 +169,86 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                 putExtra("DURATION_VALUE", durationValueText)
                 putExtra("NOTES2", notes2Text)
             }
-            startActivity(intent)
+
+            val loaderFragment = LoaderFragment()
+            loaderFragment.isCancelable = false
+            loaderFragment.show(supportFragmentManager, "loader")
+
+            // Simulate a delay before navigating
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Dismiss the loader
+                loaderFragment.dismiss()
+
+                // Navigate to the next activity
+                val intent = Intent(this, book_payment::class.java)
+                startActivity(intent)
+            }, 1500)
+        }
+    }
+
+    private fun fetchCoordinatesFromFirebase(address: String, callback: (LatLng?) -> Unit) {
+        // This function should query Firebase or any other service to fetch the coordinates.
+        // For example, using Firebase Realtime Database or Firestore:
+
+        val dbRef = db.collection("addresses")
+
+// Query the specific address document
+        dbRef.document(address).get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                val lat = document.getDouble("latitude")
+                val lng = document.getDouble("longitude")
+
+                if (lat != null && lng != null) {
+                    callback(LatLng(lat, lng)) // Return the coordinates
+                } else {
+                    callback(null) // Coordinates not found
+                }
+            } else {
+                callback(null) // Address not found
+            }
+        }.addOnFailureListener {
+            Log.d("FirebaseError", "Error fetching data")
+            callback(null)
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
+        Log.d("MapDebug", "GoogleMap is ready.")
     }
 
     private fun fetchSuggestions(query: String, adapter: ArrayAdapter<String>) {
-        val queryList = listOf("name", "city", "province", "state")
-        suggestions.clear()
+        val queryFields = listOf("name", "city", "province", "state")
+        val tempSuggestions = mutableSetOf<String>() // Use Set to ensure unique entries
 
-        val queriesDone = queryList.size
+        val queriesDone = queryFields.size
         var processedQueries = 0
 
-        for (field in queryList) {
+        queryFields.forEach { field ->
             db.collection("addresses")
                 .whereGreaterThanOrEqualTo(field, query)
                 .whereLessThanOrEqualTo(field, query + '\uf8ff') // For prefix matching
                 .get()
                 .addOnSuccessListener { documents ->
-                    Log.d("FirestoreDebug", "Number of documents fetched: ${documents.size()}")
                     for (document in documents) {
-                        val name = document.getString("name")
-                        Log.d("FirestoreDebug", "Name value: $name")
-                        if (name != null && !suggestions.contains(name)) {
-                            suggestions.add(name)
-                        }
+                        document.getString(field)?.let { tempSuggestions.add(it) }
                     }
-                    Log.d("SuggestionsDebug", "Suggestions size: ${suggestions.size}")
                     processedQueries++
-                    Log.d("SuggestionsDebug", "processedQueries size: ${processedQueries}")
                     if (processedQueries == queriesDone) {
-                        // Only update the adapter after all queries have been processed
-                        Log.d("SuggestionsDebug", "Suggestions before clearing: ${suggestions.size}")
-                        if(adapter.count != 0) {
-                            adapter.clear()
-                        }
-                        Log.d("SuggestionsDebug", "Suggestions after clearing: ${suggestions.size}")
+                        // Update suggestions only after all queries are processed
+                        suggestions.clear()
+                        suggestions.addAll(tempSuggestions)
+
+                        // Update adapter
+                        adapter.clear()
                         adapter.addAll(suggestions)
-                        Log.d("SuggestionsDebug", "Suggestions after addAll: ${suggestions.size}")
                         adapter.notifyDataSetChanged()
-                        Log.d("AutoCompleteDebug3", "Adapter items count after update: ${adapter.count}")
+
+                        Log.d("AutoCompleteDebug", "Suggestions updated: $suggestions")
                     }
                 }
                 .addOnFailureListener { exception ->
-                    Log.e("FirestoreDebug", "Error fetching data", exception)
+                    Log.e("FirestoreDebug", "Error fetching data for field $field", exception)
                 }
         }
     }

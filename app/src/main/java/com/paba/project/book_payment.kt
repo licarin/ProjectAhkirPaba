@@ -13,17 +13,10 @@ import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.gson.Gson
-import com.midtrans.sdk.corekit.core.MidtransSDK
-import com.midtrans.sdk.corekit.core.TransactionRequest
-import com.midtrans.sdk.corekit.models.BillingAddress
-import com.midtrans.sdk.corekit.models.CustomerDetails
-import com.midtrans.sdk.corekit.models.ItemDetails
-import com.midtrans.sdk.corekit.models.ShippingAddress
 import com.midtrans.sdk.corekit.models.snap.TransactionResult.STATUS_FAILED
 import com.midtrans.sdk.corekit.models.snap.TransactionResult.STATUS_INVALID
 import com.midtrans.sdk.corekit.models.snap.TransactionResult.STATUS_PENDING
 import com.midtrans.sdk.corekit.models.snap.TransactionResult.STATUS_SUCCESS
-import com.midtrans.sdk.uikit.SdkUIFlowBuilder
 import com.midtrans.sdk.uikit.api.model.CustomColorTheme
 import com.midtrans.sdk.uikit.api.model.TransactionResult
 import com.midtrans.sdk.uikit.external.UiKitApi
@@ -31,7 +24,6 @@ import com.midtrans.sdk.uikit.internal.util.UiKitConstants
 import com.midtrans.sdk.uikit.internal.util.UiKitConstants.STATUS_CANCELED
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -109,7 +101,7 @@ class book_payment : AppCompatActivity() {
         val gson = Gson()
 
         UiKitApi.Builder()
-            .withMerchantClientKey("SB-Mid-client-HTLWiEqYeItTwAPm") // client_key is mandatory
+            .withMerchantClientKey("Mid-client-3W4XmEyNTj0uksmG") // client_key is mandatory
             .withContext(applicationContext) // context is mandatory
             .withMerchantUrl("https://merchant-server-dummy.vercel.app/api/charge/") // set transaction finish callback (sdk callback)
             .enableLog(true) // enable sdk log (optional)
@@ -186,12 +178,15 @@ class book_payment : AppCompatActivity() {
                     snapToken = snapResponse.token
                     val redirectUrl = snapResponse.redirect_url
 
-                    Log.d("TestToken", "Snap Token: $snapToken")
+                    Log.d("TestToken", "Snap Token: $redirectUrl")
                     println("Redirect URL: $redirectUrl")
                     runOnUiThread {
                         if (!snapToken.isNullOrEmpty()) {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrl))
-                            startActivity(intent)
+                            UiKitApi.getDefaultInstance().startPaymentUiFlow(
+                                this@book_payment, // Activity
+                                launcher, // ActivityResultLauncher
+                                snapToken
+                            )
                         } else {
                             Log.d("TestToken", "Token tidak ditemukan")
                         }
