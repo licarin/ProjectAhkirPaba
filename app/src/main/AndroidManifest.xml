@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -34,20 +37,19 @@
 
         <activity
             android:name=".guide_detail"
-            android:exported="false">
-
-        </activity>
-        <activity
-            android:name=".book_payment"
-            android:exported="false" />
-        <activity
-            android:name=".book_detail"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".book_payment"
+            android:exported="false" />
+        <activity
+            android:name=".book_detail"
+            android:exported="false">
         </activity>
         <activity
             android:name=".signUp"

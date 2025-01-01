@@ -2,7 +2,9 @@ package com.paba.project
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -11,19 +13,33 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import org.osmdroid.config.Configuration
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapController
+import android.Manifest
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 class guide_detail : AppCompatActivity() {
     lateinit var _autoComplete: AutoCompleteTextView
+    var locationList: MutableList<mapLocation> = ArrayList()
+    lateinit var mapController: MapController
+    lateinit var myLocationOverlay: MyLocationNewOverlay
+    lateinit var _gmaps: MapView
+    private val locationPermissionCode = 100
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_guide_detail)
+        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -41,6 +57,15 @@ class guide_detail : AppCompatActivity() {
         var _tvPrice = findViewById<TextView>(R.id.tvPrice)
         var _btnOrder = findViewById<CardView>(R.id.btnOrder)
         var _etNotes = findViewById<EditText>(R.id.et_notes)
+        _gmaps = findViewById<MapView>(R.id.gmaps)
+
+        // setup location permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
+        } else {
+            enableLocation()
+        }
 
         // set on click listener
         _minusIcon.setOnClickListener {
@@ -74,6 +99,7 @@ class guide_detail : AppCompatActivity() {
         _btnOrder.setOnClickListener {
             var dataBaru = guideNowOrders(
                 id = random,
+                location = "Galaxy Mall 3",
                 price = _tvPrice.text.toString().toInt(),
                 language = _autoComplete.text.toString(),
                 duration = _duration.text.toString().toInt(),
@@ -91,6 +117,7 @@ class guide_detail : AppCompatActivity() {
                 }
 
             var intent = Intent(this, book_payment::class.java)
+            intent.putExtra("order_id", dataBaru.id)
             startActivity(intent)
         }
     }
@@ -101,5 +128,20 @@ class guide_detail : AppCompatActivity() {
         val language = resources.getStringArray(R.array.languages)
         val adapter = ArrayAdapter(this, R.layout.dropdown_menu, language)
         _autoComplete.setAdapter(adapter)
+    }
+
+    private fun enableLocation() {
+        myLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(this), _gmaps)
+        myLocationOverlay.enableMyLocation()
+        myLocationOverlay.runOnFirstFix {
+            runOnUiThread {
+                val location = myLocationOverlay.myLocation
+                if (location != null) {
+                    _gmaps.controller.setZoom(20.0)
+                    _gmaps.controller.setCenter(location)
+                }
+            }
+        }
+        _gmaps.overlays.add(myLocationOverlay)
     }
 }

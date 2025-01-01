@@ -21,6 +21,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        dataBinding = true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -52,10 +56,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation ("com.google.android.gms:play-services-maps:18.1.0")
-    implementation ("com.midtrans:uikit:2.0.0-SANDBOX")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.midtrans:uikit:2.0.0-SANDBOX")
     implementation("com.midtrans:uikit:1.34.1")
-    implementation (libs.okhttp)
+    implementation(libs.okhttp)
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation (libs.osmdroid)
+    implementation(libs.osmdroid)
 }
