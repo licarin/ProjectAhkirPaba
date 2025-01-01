@@ -283,6 +283,10 @@ class book_payment : AppCompatActivity() {
                         Toast.makeText(this, "Transaction ID: " + transactionResult.transactionId + ". Message: " + transactionResult.status, Toast.LENGTH_LONG).show()
                     }
                 }
+                // Redirect to home activity after transaction is completed
+                val intent = Intent(this, home::class.java)
+                startActivity(intent)
+                finish()
             } else {
                 Toast.makeText(this, "Transaction Invalid", Toast.LENGTH_LONG).show()
             }
