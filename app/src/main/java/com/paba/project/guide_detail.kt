@@ -22,16 +22,17 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapController
 import android.Manifest
+import android.location.Geocoder
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import java.util.Locale
 
 class guide_detail : AppCompatActivity() {
     lateinit var _autoComplete: AutoCompleteTextView
-    var locationList: MutableList<mapLocation> = ArrayList()
-    lateinit var mapController: MapController
     lateinit var myLocationOverlay: MyLocationNewOverlay
     lateinit var _gmaps: MapView
+    lateinit var _address : TextView
     private val locationPermissionCode = 100
 
     @SuppressLint("SetTextI18n")
@@ -39,7 +40,7 @@ class guide_detail : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_guide_detail)
-        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
+        Configuration.getInstance().load(this, applicationContext.getSharedPreferences("osmdroid", MODE_PRIVATE))
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -57,6 +58,8 @@ class guide_detail : AppCompatActivity() {
         var _tvPrice = findViewById<TextView>(R.id.tvPrice)
         var _btnOrder = findViewById<CardView>(R.id.btnOrder)
         var _etNotes = findViewById<EditText>(R.id.et_notes)
+        _address = findViewById<TextView>(R.id.tvAddressNow)
+
         _gmaps = findViewById<MapView>(R.id.gmaps)
 
         // setup location permission
@@ -130,18 +133,30 @@ class guide_detail : AppCompatActivity() {
         _autoComplete.setAdapter(adapter)
     }
 
-    private fun enableLocation() {
+    fun enableLocation() {
         myLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(this), _gmaps)
         myLocationOverlay.enableMyLocation()
         myLocationOverlay.runOnFirstFix {
             runOnUiThread {
                 val location = myLocationOverlay.myLocation
                 if (location != null) {
-                    _gmaps.controller.setZoom(20.0)
+                    _gmaps.controller.setZoom(15.0)
                     _gmaps.controller.setCenter(location)
+                    val address = getAddressFromLocation(location.latitude, location.longitude)
+                    _address.setText(address)
                 }
             }
         }
         _gmaps.overlays.add(myLocationOverlay)
+    }
+
+    fun getAddressFromLocation(latitude: Double, longitude: Double): String {
+        val geocoder = Geocoder(this, Locale.getDefault())
+        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+        return if (!addresses.isNullOrEmpty()) {
+            addresses[0].getAddressLine(0)
+        } else {
+            "Alamat tidak ditemukan"
+        }
     }
 }
