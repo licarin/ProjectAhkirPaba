@@ -18,7 +18,12 @@
         tools:targetApi="31">
         <activity
             android:name=".search_tour_guide"
-            android:exported="false" >
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <!--
@@ -37,17 +42,23 @@
             android:value="@string/google_map_api_key" />
 
         <activity
+            android:name=".tourGuide_profile"
+            android:exported="false">
+
+        </activity>
+
+        <activity
             android:name=".guide_detail"
             android:exported="false">
 
         </activity>
         <activity
             android:name=".book_payment"
-            android:exported="false">
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".book_detail"
             android:exported="false">
+
         </activity>
         <activity
             android:name=".signUp"
@@ -57,12 +68,7 @@
             android:exported="false" />
         <activity
             android:name=".login"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false">

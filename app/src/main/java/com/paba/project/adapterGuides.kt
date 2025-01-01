@@ -1,5 +1,6 @@
 package com.paba.project
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +39,21 @@ class adapterGuides (private val listGuides : ArrayList<tour_guide_detail>) : Re
         holder._tvPrice.text = "Rp ${tourGuideDetail.price}"
         holder._tvRating.text = tourGuideDetail.rating
         holder._tvReviewers.text = "(${tourGuideDetail.reviews} reviews)"
+
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, tourGuide_profile::class.java)
+            intent.putExtra("name", tourGuideDetail.name)
+            intent.putExtra("location", tourGuideDetail.location)
+            intent.putExtra("city", tourGuideDetail.city)
+            intent.putExtra("language", tourGuideDetail.language)
+            intent.putExtra("price", "Rp ${tourGuideDetail.price}")
+            intent.putExtra("rating", tourGuideDetail.rating)
+            intent.putExtra("reviews", tourGuideDetail.reviews)
+            intent.putExtra("profile_pic", tourGuideDetail.profile_pic)
+            intent.putExtra("aboutMe", tourGuideDetail.aboutMe)
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {

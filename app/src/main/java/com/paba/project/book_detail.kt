@@ -12,7 +12,9 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -43,6 +45,49 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        val imageView = findViewById<ImageView>(R.id.guideImage)
+        val guideName = findViewById<TextView>(R.id.guideName)
+        val guideLocation = findViewById<TextView>(R.id.guideLocation)
+        val guideLanguages = findViewById<TextView>(R.id.guideLanguages)
+
+
+        val name = intent.getStringExtra("name")
+        var harga : Double? = 0.0
+
+        if (name != null) {
+            db.collection("tbTourGuide").document(name)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        // Handle the data
+                        val data = document.data
+
+                        val location = document.getString("lokasi") ?: "N/A"
+                        val price = document.getString("harga") ?: "N/A"
+                        val languages = document.getString("bahasa") ?: "N/A"
+                        val image = document.getString("image") ?: "N/A"
+                        val nama = document.getString("nama") ?: "N/A"
+
+
+                        // Example: Display the data (Update your UI elements here)
+                        val imageResId = resources.getIdentifier(image, "drawable", packageName)
+                        if (imageResId != 0) {
+                            imageView.setImageResource(imageResId)
+                        }
+                        guideName.text = nama
+                        guideLocation.text = location
+                        guideLanguages.text = languages
+                        harga = price.toDouble()
+                    } else {
+                        Toast.makeText(this, "No such document found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    // Handle the error
+                    Toast.makeText(this, "Failed to fetch data: ${exception.message}", Toast.LENGTH_SHORT).show()
+                }
         }
 
         val addressesRef = db.collection("addresses")
@@ -197,6 +242,7 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                     putExtra("TASK_DATE", findViewById<TextInputEditText>(R.id.taskDateField2).text.toString())
                     putExtra("DURATION_VALUE", taskDurValue.toString())
                     putExtra("NOTES2", findViewById<EditText>(R.id.editTextTextMultiLine).text.toString())
+                    putExtra("PRICE", harga)
                 }
                 startActivity(intent)
             }, 1500)

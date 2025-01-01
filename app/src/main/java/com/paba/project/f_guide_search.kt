@@ -57,6 +57,7 @@ class f_guide_search : Fragment() {
 
                         if (city.contains(locationLowerCase)) {
                             val guide = tour_guide_detail(
+                                aboutMe = document.getString("aboutMe") ?: "",
                                 profile_pic = document.getString("image") ?: "",
                                 name = document.getString("nama") ?: "Unknown",
                                 location = document.getString("lokasi") ?: "",

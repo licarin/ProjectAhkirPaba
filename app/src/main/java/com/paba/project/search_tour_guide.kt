@@ -1,6 +1,7 @@
 package com.paba.project
 
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -21,6 +22,21 @@ class search_tour_guide : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        // Retrieve location from Intent
+        val location = intent.getStringExtra("location")
+
+        if (location != null) {
+            Log.d("SearchTourGuide", "Location received: $location")
+            // Load the f_guide_search fragment with the location
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, f_guide_search.newInstance(location.toString()))
+                .commit()
+            finish()
+        } else {
+            // Handle case where location is null
+            // For example, show a default fragment or error message
         }
 
         // fragment mainn

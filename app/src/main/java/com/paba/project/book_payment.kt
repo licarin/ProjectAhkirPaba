@@ -90,6 +90,9 @@ class book_payment : AppCompatActivity() {
         val taskDate = intent.getStringExtra("TASK_DATE")
         val durationValue = intent.getStringExtra("DURATION_VALUE")
         val notes2 = intent.getStringExtra("NOTES2")
+        val harga = intent.getDoubleExtra("PRICE", 0.0)
+
+        Log.d("harga", "$harga")
 
         val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -117,7 +120,7 @@ class book_payment : AppCompatActivity() {
             .build()
         setLocaleNew("id")
 
-        val totalAmount = durationValue.toString().toDoubleOrNull()?.times(20000.00)
+        val totalAmount = durationValue.toString().toDoubleOrNull()?.times(harga)
 
         val transactionDetails = if (totalAmount != null) {
             TransactionDetails(
@@ -156,7 +159,7 @@ class book_payment : AppCompatActivity() {
         val itemDetails = listOf(
             ItemDetails(
                 id = "book01",
-                price = 20000.00,
+                price = harga,
                 quantity = durationValue.toString().toIntOrNull() ?: 1,
                 name = location.toString() + " Tour Guide"
             )
