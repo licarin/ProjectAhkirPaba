@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
 
 android {
@@ -51,6 +52,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation (libs.play.services.maps)
-    implementation ("com.midtrans:uikit:2.0.0-SANDBOX")
-    implementation("com.midtrans:uikit:1.34.1")
+    implementation (libs.midtrans.uikit)
+    implementation (libs.okhttp)
+    implementation (libs.gson)
 }
