@@ -34,6 +34,14 @@
 
         <activity
             android:name=".guide_detail"
+            android:exported="false">
+
+        </activity>
+        <activity
+            android:name=".book_payment"
+            android:exported="false" />
+        <activity
+            android:name=".book_detail"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,12 +49,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".book_payment"
-            android:exported="false" />
-        <activity
-            android:name=".book_detail"
-            android:exported="false" />
         <activity
             android:name=".signUp"
             android:exported="false" />

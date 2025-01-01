@@ -51,8 +51,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation (libs.play.services.maps)
-    implementation (libs.midtrans.uikit)
-    implementation (libs.okhttp)
-    implementation (libs.gson)
+    implementation(libs.play.services.maps)
+    implementation(libs.midtrans.uikit)
+    implementation(libs.okhttp)
+    implementation(libs.gson)
+    implementation(libs.osmdroid)
+
 }

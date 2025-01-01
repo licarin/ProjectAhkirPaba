@@ -98,8 +98,8 @@ class guide_detail : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         _autoComplete = findViewById<AutoCompleteTextView>(R.id.tv_languange_value)
-        val languange = resources.getStringArray(R.array.languages)
-        val adapter = ArrayAdapter(this, R.layout.dropdown_menu, languange)
+        val language = resources.getStringArray(R.array.languages)
+        val adapter = ArrayAdapter(this, R.layout.dropdown_menu, language)
         _autoComplete.setAdapter(adapter)
     }
 }
