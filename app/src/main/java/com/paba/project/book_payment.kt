@@ -84,6 +84,13 @@ class book_payment : AppCompatActivity() {
             insets
         }
 
+        val location = intent.getStringExtra("SEARCH_LOCATION")
+        val addressDetail = intent.getStringExtra("ADDRESS_DETAIL")
+        val notes = intent.getStringExtra("NOTES")
+        val taskDate = intent.getStringExtra("TASK_DATE")
+        val durationValue = intent.getStringExtra("DURATION_VALUE")
+        val notes2 = intent.getStringExtra("NOTES2")
+
         val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 result.data?.let {
@@ -101,7 +108,7 @@ class book_payment : AppCompatActivity() {
         val gson = Gson()
 
         UiKitApi.Builder()
-            .withMerchantClientKey("Mid-client-3W4XmEyNTj0uksmG") // client_key is mandatory
+            .withMerchantClientKey("SB-Mid-client-HTLWiEqYeItTwAPm") // client_key is mandatory
             .withContext(applicationContext) // context is mandatory
             .withMerchantUrl("https://merchant-server-dummy.vercel.app/api/charge/") // set transaction finish callback (sdk callback)
             .enableLog(true) // enable sdk log (optional)
@@ -110,10 +117,21 @@ class book_payment : AppCompatActivity() {
             .build()
         setLocaleNew("id")
 
-        val transactionDetails = TransactionDetails(
-            order_id = "order-" + System.currentTimeMillis(),
-            gross_amount = 100000.00
-        )
+        val totalAmount = durationValue.toString().toDoubleOrNull()?.times(20000.00)
+
+        val transactionDetails = if (totalAmount != null) {
+            TransactionDetails(
+                order_id = "order-" + System.currentTimeMillis(),
+                gross_amount = totalAmount
+            )
+        } else {
+            // Handle the case where totalAmount is null
+            Log.e("Transaction", "Failed to calculate totalAmount")
+            TransactionDetails(
+                order_id = "default-order",
+                gross_amount = 0.0
+            )
+        }
         val billingAddress = BillingAddress(
             address = "Surabaya, Jawa Timur",
             city = "Surabaya",
@@ -121,7 +139,7 @@ class book_payment : AppCompatActivity() {
         )
 
         val shippingAddress = ShippingAddress(
-            address = "Surabaya, Jawa Timur",
+            address = location.toString(),
             city = "Surabaya",
             postal_code = "60111"
         )
@@ -138,11 +156,14 @@ class book_payment : AppCompatActivity() {
         val itemDetails = listOf(
             ItemDetails(
                 id = "book01",
-                price = 10000.00,
-                quantity = 10,
-                name = "Book Item"
+                price = 20000.00,
+                quantity = durationValue.toString().toIntOrNull() ?: 1,
+                name = location.toString() + " Tour Guide"
             )
         )
+
+        Log.d("Location", "$location")
+        Log.d("Quantity", "$durationValue")
 
         val transactionRequest = TransactionRequest(
             transaction_details = transactionDetails,
@@ -178,7 +199,7 @@ class book_payment : AppCompatActivity() {
                     snapToken = snapResponse.token
                     val redirectUrl = snapResponse.redirect_url
 
-                    Log.d("TestToken", "Snap Token: $redirectUrl")
+                    Log.d("TestToken", "Snap Token: $snapToken")
                     println("Redirect URL: $redirectUrl")
                     runOnUiThread {
                         if (!snapToken.isNullOrEmpty()) {

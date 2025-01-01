@@ -45,6 +45,29 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
             insets
         }
 
+        val addressesRef = db.collection("addresses")
+
+        addressesRef.get()
+            .addOnSuccessListener { snapshot ->
+                if (!snapshot.isEmpty) {
+                    for (document in snapshot.documents) {
+                        // Add or update the 'price' field
+                        document.reference.update("price", 100000) // Replace 100 with your desired value
+                            .addOnSuccessListener {
+                                println("Successfully updated document: ${document.id}")
+                            }
+                            .addOnFailureListener { e ->
+                                println("Error updating document: ${e.message}")
+                            }
+                    }
+                } else {
+                    println("No documents found in the collection.")
+                }
+            }
+            .addOnFailureListener { e ->
+                println("Error fetching documents: ${e.message}")
+            }
+
         val autoCompleteTextView = findViewById<AutoCompleteTextView>(R.id.searchLocation)
 
         val mapFragment = supportFragmentManager
@@ -140,36 +163,23 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
         val minDurBtn = findViewById<Button>(R.id.btn_minus)
         val taskDuration = findViewById<TextView>(R.id.tv_duration_value1)
 
+        var taskDurValue = taskDuration.text.toString().toIntOrNull() ?: 1
+
         plusDurBtn.setOnClickListener {
-            val currentDuration = taskDuration.text.toString().toIntOrNull() ?: 0
+            val currentDuration = taskDurValue ?: 0
             taskDuration.setText((currentDuration + 1).toString())
+            taskDurValue++
         }
         minDurBtn.setOnClickListener {
-            val currentDuration = taskDuration.text.toString().toIntOrNull() ?: 0
+            val currentDuration = taskDurValue ?: 0
             if (currentDuration > 1) {
                 taskDuration.setText((currentDuration - 1).toString())
+                taskDurValue++
             }
         }
-
-        var location = autoCompleteTextView.text.toString()
-        var addressDetailText = findViewById<EditText>(R.id.addressDetail).text.toString()
-        var notesText = findViewById<EditText>(R.id.notes).text.toString()
-        var taskDateText = findViewById<TextInputEditText>(R.id.taskDateField2).text.toString()
-        var durationValueText = findViewById<TextView>(R.id.tv_duration_value1).text.toString()
-        var notes2Text = findViewById<EditText>(R.id.editTextTextMultiLine).text.toString()
 
         val btnBook = findViewById<Button>(R.id.bookNow)
         btnBook.setOnClickListener {
-//        semesntara book_payment (nanti ganti)
-            val intent = Intent(this, book_payment::class.java).apply {
-                putExtra("SEARCH_LOCATION", location)
-                putExtra("ADDRESS_DETAIL", addressDetailText)
-                putExtra("NOTES", notesText)
-                putExtra("TASK_DATE", taskDateText)
-                putExtra("DURATION_VALUE", durationValueText)
-                putExtra("NOTES2", notes2Text)
-            }
-
             val loaderFragment = LoaderFragment()
             loaderFragment.isCancelable = false
             loaderFragment.show(supportFragmentManager, "loader")
@@ -180,7 +190,14 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                 loaderFragment.dismiss()
 
                 // Navigate to the next activity
-                val intent = Intent(this, book_payment::class.java)
+                val intent = Intent(this, book_payment::class.java).apply {
+                    putExtra("SEARCH_LOCATION", autoCompleteTextView.text.toString())
+                    putExtra("ADDRESS_DETAIL", findViewById<EditText>(R.id.addressDetail).text.toString())
+                    putExtra("NOTES", findViewById<EditText>(R.id.notes).text.toString())
+                    putExtra("TASK_DATE", findViewById<TextInputEditText>(R.id.taskDateField2).text.toString())
+                    putExtra("DURATION_VALUE", taskDurValue.toString())
+                    putExtra("NOTES2", findViewById<EditText>(R.id.editTextTextMultiLine).text.toString())
+                }
                 startActivity(intent)
             }, 1500)
         }
