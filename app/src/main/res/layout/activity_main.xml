@@ -1,85 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="#ffffff">
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        android:background="#ffffff">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnToSignUp"
-        android:layout_width="336dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#E2ECF5"
-        android:fontFamily="@font/afacad"
-        android:text="Sign Up"
-        android:textColor="#3D81A4"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/btnToLogin"
-        app:layout_constraintStart_toStartOf="@+id/btnToLogin"
-        app:layout_constraintTop_toBottomOf="@+id/btnToLogin"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnToSignUp"
+            android:layout_width="336dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#E2ECF5"
+            android:fontFamily="@font/afacad"
+            android:text="Sign Up"
+            android:textColor="#3D81A4"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/btnToLogin"
+            app:layout_constraintStart_toStartOf="@+id/btnToLogin"
+            app:layout_constraintTop_toBottomOf="@+id/btnToLogin"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnToLogin"
-        android:layout_width="336dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="80dp"
-        android:backgroundTint="#3D81A4"
-        android:fontFamily="@font/afacad"
-        android:textSize="20sp"
-        android:text="Log In"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnToLogin"
+            android:layout_width="336dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="80dp"
+            android:backgroundTint="#3D81A4"
+            android:fontFamily="@font/afacad"
+            android:textSize="20sp"
+            android:text="Log In"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView5"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium" />
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="380dp"
-        android:layout_height="380dp"
-        android:layout_marginTop="72dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.516"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/logo_foreground" />
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="380dp"
+            android:layout_height="380dp"
+            android:layout_marginTop="72dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.516"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/logo_foreground" />
 
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="@+id/btnToSignUp"
-        app:layout_constraintStart_toStartOf="@+id/btnToSignUp"
-        app:layout_constraintTop_toBottomOf="@+id/btnToSignUp"
-        app:srcCompat="@drawable/group_206" />
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="@+id/btnToSignUp"
+            app:layout_constraintStart_toStartOf="@+id/btnToSignUp"
+            app:layout_constraintTop_toBottomOf="@+id/btnToSignUp"
+            app:srcCompat="@drawable/group_206" />
 
-    <com.google.android.material.button.MaterialButton
-        android:layout_width="336dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="#ffffff"
-        android:fontFamily="@font/afacad"
-        android:text="Sign as Tour Guide"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/imageView9"
-        app:layout_constraintStart_toStartOf="@+id/imageView9"
-        app:layout_constraintTop_toBottomOf="@+id/imageView9"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
-        app:strokeColor="#000000"
-        app:strokeWidth="1dp" />
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="336dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="#ffffff"
+            android:fontFamily="@font/afacad"
+            android:text="Sign as Tour Guide"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/imageView9"
+            app:layout_constraintStart_toStartOf="@+id/imageView9"
+            app:layout_constraintTop_toBottomOf="@+id/imageView9"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
+            app:strokeColor="#000000"
+            app:strokeWidth="1dp" />
 
-    <Button
-        android:id="@+id/buttonBook"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Book page"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/buttonBook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Book page"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
