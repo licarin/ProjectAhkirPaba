@@ -72,6 +72,14 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                         "CurrentDebug",
                         "Current Location: Lat: ${location.latitude}, Lng: ${location.longitude}"
                     )
+                    val latLng = LatLng(location.latitude, location.longitude)
+                    mGoogleMap?.addMarker(
+                        MarkerOptions()
+                            .position(latLng)
+                            .title("Marker at current location")
+                    )
+                    // Move camera to the current location with zoom level 15
+                    mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f))
                 } else {
                     Log.d("CurrentDebug", "Failed to get location")
                 }
@@ -264,6 +272,8 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
         val btnBook = findViewById<Button>(R.id.bookNow)
         btnBook.setOnClickListener {
             val loaderFragment = LoaderFragment()
+            val email = intent.getStringExtra("email")
+            Log.d("email", "email: $email")
             loaderFragment.isCancelable = false
             loaderFragment.show(supportFragmentManager, "loader")
 
@@ -281,6 +291,7 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                     putExtra("DURATION_VALUE", taskDurValue.toString())
                     putExtra("NOTES2", findViewById<EditText>(R.id.editTextTextMultiLine).text.toString())
                     putExtra("PRICE", harga)
+                    putExtra("USER_EMAIL", email)
                 }
                 startActivity(intent)
             }, 1500)

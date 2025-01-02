@@ -1,4 +1,5 @@
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -90,12 +91,15 @@ class f_main_search : Fragment() {
                 if (documents.isEmpty) {
                     Toast.makeText(requireContext(), "No guides found in $location", Toast.LENGTH_SHORT).show()
                 } else {
-                    val searchFragment = f_guide_search.newInstance(location)
+                    Log.d("wow", "${arguments?.getString("email")}")
+                    if ((arguments?.getString("email")) != null) {
+                        val searchFragment = f_guide_search.newInstance(location, arguments?.getString("email").toString())
 
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragmentContainer, searchFragment)
-                        .addToBackStack(null)
-                        .commit()
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragmentContainer, searchFragment)
+                            .addToBackStack(null)
+                            .commit()
+                    }
                 }
             }
             .addOnFailureListener { e ->

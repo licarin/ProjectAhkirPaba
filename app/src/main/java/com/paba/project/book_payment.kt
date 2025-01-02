@@ -1,17 +1,22 @@
 package com.paba.project
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.firestore
 import com.google.gson.Gson
 import com.midtrans.sdk.corekit.models.snap.TransactionResult.STATUS_FAILED
 import com.midtrans.sdk.corekit.models.snap.TransactionResult.STATUS_INVALID
@@ -45,7 +50,6 @@ class book_payment : AppCompatActivity() {
 
     data class CustomerDetails(
         val first_name: String,
-        val last_name: String,
         val email: String,
         val phone: String,
         val billing_address: BillingAddress,
@@ -74,6 +78,11 @@ class book_payment : AppCompatActivity() {
         val token: String,
         val redirect_url: String
     )
+
+    var db = Firebase.firestore
+
+    private lateinit var customerDetails: CustomerDetails
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -84,6 +93,8 @@ class book_payment : AppCompatActivity() {
             insets
         }
 
+        var userData: Map<String, Any>? = null
+
         val location = intent.getStringExtra("SEARCH_LOCATION")
         val addressDetail = intent.getStringExtra("ADDRESS_DETAIL")
         val notes = intent.getStringExtra("NOTES")
@@ -91,6 +102,9 @@ class book_payment : AppCompatActivity() {
         val durationValue = intent.getStringExtra("DURATION_VALUE")
         val notes2 = intent.getStringExtra("NOTES2")
         val harga = intent.getDoubleExtra("PRICE", 0.0)
+        val email = intent.getStringExtra("USER_EMAIL") ?: ""
+
+        Log.d("email", "email: $email")
 
         Log.d("harga", "$harga")
 
@@ -147,15 +161,6 @@ class book_payment : AppCompatActivity() {
             postal_code = "60111"
         )
 
-        val customerDetails = CustomerDetails(
-            first_name = "Budi",
-            last_name = "Nugraha",
-            email = "budi.nugraha@gmail.com",
-            phone = "08123456789",
-            billing_address = billingAddress,
-            shipping_address = shippingAddress
-        )
-
         val itemDetails = listOf(
             ItemDetails(
                 id = "book01",
@@ -165,61 +170,78 @@ class book_payment : AppCompatActivity() {
             )
         )
 
-        Log.d("Location", "$location")
-        Log.d("Quantity", "$durationValue")
+        db.collection("tbUser")
+            .document(email)
+            .get()
+            .addOnSuccessListener { result ->
+                if (result.exists()) {
+                    userData = result.data
+                    customerDetails = CustomerDetails(
+                        first_name = userData?.get("name") as? String ?: "",
+                        email = userData?.get("email") as? String ?: "",
+                        phone = userData?.get("phoneNumber") as? String ?: "",
+                        billing_address = billingAddress,
+                        shipping_address = shippingAddress
+                    )
 
-        val transactionRequest = TransactionRequest(
-            transaction_details = transactionDetails,
-            customer_details = customerDetails,
-            item_details = itemDetails
-        )
+                    val transactionRequest = TransactionRequest(
+                        transaction_details = transactionDetails,
+                        customer_details = customerDetails,
+                        item_details = itemDetails
+                    )
 
-        val requestBody = RequestBody.create(
-            "application/json; charset=utf-8".toMediaTypeOrNull(),
-            gson.toJson(transactionRequest)
-        )
-        println("Request Body: ${gson.toJson(transactionRequest)}")
+                    val requestBody = RequestBody.create(
+                        "application/json; charset=utf-8".toMediaTypeOrNull(),
+                        gson.toJson(transactionRequest)
+                    )
+                    println("Request Body: ${gson.toJson(transactionRequest)}")
 
-        val request = Request.Builder()
-            .url("https://merchant-server-dummy.vercel.app/api/charge/")
-            .post(requestBody)
-            .build()
-        println("Sending request to ${request.url}")
+                    val request = Request.Builder()
+                        .url("https://merchant-server-dummy.vercel.app/api/charge/")
+                        .post(requestBody)
+                        .build()
+                    println("Sending request to ${request.url}")
 
-        var snapToken : String?
+                    var snapToken : String?
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body?.string()
-                    println("Raw Response: $responseBody")
-                    val snapResponse = gson.fromJson(responseBody, SnapResponse::class.java)
-
-                    snapToken = snapResponse.token
-                    val redirectUrl = snapResponse.redirect_url
-
-                    Log.d("TestToken", "Snap Token: $snapToken")
-                    println("Redirect URL: $redirectUrl")
-                    runOnUiThread {
-                        if (!snapToken.isNullOrEmpty()) {
-                            UiKitApi.getDefaultInstance().startPaymentUiFlow(
-                                this@book_payment, // Activity
-                                launcher, // ActivityResultLauncher
-                                snapToken
-                            )
-                        } else {
-                            Log.d("TestToken", "Token tidak ditemukan")
+                    client.newCall(request).enqueue(object : Callback {
+                        override fun onFailure(call: Call, e: IOException) {
+                            e.printStackTrace()
                         }
-                    }
-                } else {
-                    println("Error: ${response.code}")
+
+                        override fun onResponse(call: Call, response: Response) {
+                            if (response.isSuccessful) {
+                                val responseBody = response.body?.string()
+                                println("Raw Response: $responseBody")
+                                val snapResponse = gson.fromJson(responseBody, SnapResponse::class.java)
+
+                                snapToken = snapResponse.token
+                                val redirectUrl = snapResponse.redirect_url
+
+                                Log.d("TestToken", "Snap Token: $snapToken")
+                                println("Redirect URL: $redirectUrl")
+                                runOnUiThread {
+                                    if (!snapToken.isNullOrEmpty()) {
+                                        UiKitApi.getDefaultInstance().startPaymentUiFlow(
+                                            this@book_payment, // Activity
+                                            launcher, // ActivityResultLauncher
+                                            snapToken
+                                        )
+                                    } else {
+                                        Log.d("TestToken", "Token tidak ditemukan")
+                                    }
+                                }
+                            } else {
+                                println("Error: ${response.code}")
+                            }
+                        }
+                    })
+                    Log.d("customer", "$customerDetails")
                 }
             }
-        })
+
+        Log.d("Location", "$location")
+        Log.d("Quantity", "$durationValue")
 
 
 

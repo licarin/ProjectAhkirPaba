@@ -1,6 +1,8 @@
 package com.paba.project
 
+import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class adapterGuides (private val listGuides : ArrayList<tour_guide_detail>) : RecyclerView.Adapter<adapterGuides.ListViewHolder>() {
+class adapterGuides (private val listGuides : ArrayList<tour_guide_detail>, private val email: String?) : RecyclerView.Adapter<adapterGuides.ListViewHolder>() {
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var _ivFoto = itemView.findViewById<ImageView>(R.id.guideImage)
         var _tvNama = itemView.findViewById<TextView>(R.id.guideName)
@@ -40,7 +42,9 @@ class adapterGuides (private val listGuides : ArrayList<tour_guide_detail>) : Re
         holder._tvRating.text = tourGuideDetail.rating
         holder._tvReviewers.text = "(${tourGuideDetail.reviews} reviews)"
 
+
         holder.itemView.setOnClickListener {
+            Log.d("Email", "Email sent: $email")
             val context = holder.itemView.context
             val intent = Intent(context, tourGuide_profile::class.java)
             intent.putExtra("name", tourGuideDetail.name)
@@ -52,6 +56,9 @@ class adapterGuides (private val listGuides : ArrayList<tour_guide_detail>) : Re
             intent.putExtra("reviews", tourGuideDetail.reviews)
             intent.putExtra("profile_pic", tourGuideDetail.profile_pic)
             intent.putExtra("aboutMe", tourGuideDetail.aboutMe)
+            if (email != null) {
+                intent.putExtra("email", email)
+            }
             context.startActivity(intent)
         }
     }

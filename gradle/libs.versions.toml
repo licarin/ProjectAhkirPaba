@@ -36,6 +36,7 @@ play-services-maps = { module = "com.google.android.gms:play-services-maps", ver
 osmdroid = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroid" }
 firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
 
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

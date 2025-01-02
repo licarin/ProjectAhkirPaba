@@ -1,6 +1,9 @@
 package com.paba.project
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -15,6 +18,8 @@ class home : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: adapterTG
     private val tourGuideList = ArrayList<tourGuide>()
+    var db = Firebase.firestore
+    var email = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +30,28 @@ class home : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        if(intent.hasExtra("email")) {
+            val emailUser = intent.getStringExtra("email") ?: ""
+            db.collection("tbUser")
+                .document(emailUser)
+                .get()
+                .addOnSuccessListener { result ->
+                    if (result.exists()) {
+                        val data = result.data
+                        email = data?.get("email").toString()
+                    }
+                }
+        }
+
+//        search section
+        val imageView8 = findViewById<ImageView>(R.id.imageView8)
+        imageView8.setOnClickListener {
+            val intent = Intent(this, search_tour_guide::class.java)
+            intent.putExtra("email", email)
+            startActivity(intent)
+        }
+
         recyclerView = findViewById(R.id.rvTourGuide)
         recyclerView.layoutManager = LinearLayoutManager(this)
 

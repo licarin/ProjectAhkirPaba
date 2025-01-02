@@ -1,5 +1,6 @@
 package com.paba.project
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -26,12 +27,13 @@ class search_tour_guide : AppCompatActivity() {
 
         // Retrieve location from Intent
         val location = intent.getStringExtra("location")
+        val email = intent.getStringExtra("email") ?: ""
 
         if (location != null) {
             Log.d("SearchTourGuide", "Location received: $location")
             // Load the f_guide_search fragment with the location
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, f_guide_search.newInstance(location.toString()))
+                .replace(R.id.fragmentContainer, f_guide_search.newInstance(location.toString(), email))
                 .commit()
             finish()
         } else {
@@ -41,6 +43,9 @@ class search_tour_guide : AppCompatActivity() {
 
         // fragment mainn
         val initialFragment = f_main_search()
+        val bundle = Bundle()
+        bundle.putString("email", email)
+        initialFragment.arguments = bundle
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, initialFragment)
             .commit()
@@ -52,7 +57,7 @@ class search_tour_guide : AppCompatActivity() {
                 val searchText = searchBar.text.toString().lowercase()
 
                 if (searchText.isNotEmpty()) {
-                    val searchFragment = f_guide_search.newInstance(searchText)
+                    val searchFragment = f_guide_search.newInstance(searchText, email)
                     supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragmentContainer,
@@ -78,11 +83,15 @@ class search_tour_guide : AppCompatActivity() {
 
             if (fragment is f_guide_search) {
                 val mainSearchFragment = f_main_search()
+                val bundle = Bundle()
+                bundle.putString("email", email)
+                mainSearchFragment.arguments = bundle
                 fragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, mainSearchFragment)
                     .commit()
             } else {
                 // buat ke home nnti
+                startActivity(Intent(this, home::class.java))
             }
         }
     }
