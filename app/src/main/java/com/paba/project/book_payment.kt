@@ -96,6 +96,7 @@ class book_payment : AppCompatActivity() {
         var userData: Map<String, Any>? = null
 
         val location = intent.getStringExtra("SEARCH_LOCATION")
+        val currentLocation = intent.getStringExtra("CURRENT_LOCATION")
         val addressDetail = intent.getStringExtra("ADDRESS_DETAIL")
         val notes = intent.getStringExtra("NOTES")
         val taskDate = intent.getStringExtra("TASK_DATE")
@@ -150,7 +151,7 @@ class book_payment : AppCompatActivity() {
             )
         }
         val billingAddress = BillingAddress(
-            address = "Surabaya, Jawa Timur",
+            address = currentLocation.toString(),
             city = "Surabaya",
             postal_code = "60111"
         )

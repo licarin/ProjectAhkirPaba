@@ -111,7 +111,7 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
             var tvPrice = _tvPrice.text.toString().toDouble()
             if (duration > 1) {
                 duration -= 1
-                tvPrice = tvPrice / 2
+                tvPrice = 200000.0 * duration
                 _duration.setText(duration.toString())
                 _tvPrice.setText(tvPrice.toInt().toString())
                 if (duration == 1) {
@@ -126,7 +126,7 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
             var duration = _duration.text.toString().toInt()
             var tvPrice = _tvPrice.text.toString().toDouble()
             duration += 1
-            tvPrice = tvPrice * 2
+            tvPrice = 200000.0 * duration
             _duration.setText(duration.toString())
             _keterangan.setText("Hours")
             _tvPrice.setText(tvPrice.toInt().toString())
@@ -138,27 +138,18 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
             var dataBaru = guideNowOrders(
                 id = random,
                 location = _mapAutoComplete.text.toString(),
-                price = _tvPrice.text.toString().toInt(),
+                price = 200000,
                 language = _autoComplete.text.toString(),
                 duration = _duration.text.toString().toInt(),
                 notes = _etNotes.text.toString()
             )
-
-            db.collection("orders")
-                .document(dataBaru.id.toString())
-                .set(dataBaru)
-                .addOnSuccessListener { documentReference ->
-                    Log.d("firebase", "Data berhasil ditambahkan dengan ID: ${dataBaru.id}")
-                }
-                .addOnFailureListener { e ->
-                    Log.w("firebase", "Error adding document", e)
-                }
 
             var intent = Intent(this, book_payment::class.java)
             intent.putExtra("SEARCH_LOCATION", dataBaru.location.toString())
             intent.putExtra("PRICE", dataBaru.price.toDouble())
             intent.putExtra("LANGUAGE", dataBaru.language.toString())
             intent.putExtra("DURATION_VALUE", dataBaru.duration.toString())
+            intent.putExtra("CURRENT_LOCATION", _address.text.toString())
             intent.putExtra("NOTES2", dataBaru.notes.toString())
             intent.putExtra("USER_EMAIL", email)
             startActivity(intent)
