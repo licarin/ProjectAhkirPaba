@@ -104,6 +104,8 @@ class book_payment : AppCompatActivity() {
         val notes2 = intent.getStringExtra("NOTES2")
         val harga = intent.getDoubleExtra("PRICE", 0.0)
         val email = intent.getStringExtra("USER_EMAIL") ?: ""
+        val postalCode = intent.getStringExtra("POSTAL_CODE")
+        val postalCodeTour = intent.getStringExtra("POSTAL_CODE_TOUR")
 
         Log.d("email", "email: $email")
 
@@ -153,18 +155,18 @@ class book_payment : AppCompatActivity() {
         val billingAddress = BillingAddress(
             address = currentLocation.toString(),
             city = "Surabaya",
-            postal_code = "60111"
+            postal_code = postalCode.toString()
         )
 
         val shippingAddress = ShippingAddress(
             address = location.toString(),
             city = "Surabaya",
-            postal_code = "60111"
+            postal_code = postalCodeTour.toString()
         )
 
         val itemDetails = listOf(
             ItemDetails(
-                id = "book01",
+                id = "book-" + System.currentTimeMillis(),
                 price = harga,
                 quantity = durationValue.toString().toIntOrNull() ?: 1,
                 name = location.toString() + " Tour Guide"
