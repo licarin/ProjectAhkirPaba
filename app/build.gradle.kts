@@ -13,8 +13,8 @@ android {
 
     defaultConfig {
         applicationId = "com.paba.project"
-        minSdk = 31
-        targetSdk = 34
+        minSdk = 28
+        targetSdk = 29
         versionCode = 1
         versionName = "1.0"
 
@@ -56,6 +56,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.midtrans:uikit:2.0.0-SANDBOX")
     implementation("com.midtrans:uikit:1.34.1")
     implementation (libs.okhttp)
