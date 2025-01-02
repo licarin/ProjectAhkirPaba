@@ -49,8 +49,12 @@ class tourGuide_profile : AppCompatActivity() {
         }
 
         btnBook.setOnClickListener {
+            val email = intent.getStringExtra("email")
             val intent = Intent(this, book_detail::class.java)
             intent.putExtra("name", name)
+            if (email != null) {
+                intent.putExtra("email", email)
+            }
             startActivity(intent)
         }
 

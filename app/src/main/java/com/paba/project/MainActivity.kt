@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        binding.buttonBook.setOnClickListener {
+        binding.btnToSignUp.setOnClickListener {
             // Show the loader
             val loaderFragment = LoaderFragment()
             loaderFragment.isCancelable = false
@@ -37,17 +37,24 @@ class MainActivity : AppCompatActivity() {
                 loaderFragment.dismiss()
 
                 // Navigate to the next activity
-                val intent = Intent(this, book_detail::class.java)
-                startActivity(intent)
+                startActivity(Intent(this, signUp::class.java))
             }, 1500) // Simulate 3-second delay
         }
 
-        binding.btnToSignUp.setOnClickListener {
-            startActivity(Intent(this, signUp::class.java))
-        }
-
         binding.btnToLogin.setOnClickListener {
-            startActivity(Intent(this, login::class.java))
+            // Show the loader
+            val loaderFragment = LoaderFragment()
+            loaderFragment.isCancelable = false
+            loaderFragment.show(supportFragmentManager, "loader")
+
+            // Simulate a delay before navigating
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Dismiss the loader
+                loaderFragment.dismiss()
+
+                // Navigate to the next activity
+                startActivity(Intent(this, login::class.java))
+            }, 1500) // Simulate 3-second delay
         }
     }
 }

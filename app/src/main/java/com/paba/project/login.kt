@@ -3,6 +3,8 @@ package com.paba.project
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
@@ -29,7 +31,9 @@ class login : AppCompatActivity() {
                 if (result.exists()) {
                     val data = result.data
                     if (data?.get("password") == password) {
-                        startActivity(Intent(this, home::class.java))
+                        val intent = Intent(this, home::class.java)
+                        intent.putExtra("email", email)
+                        startActivity(intent)
                     } else {
                         loginAlertDialog.show()
                         Log.d("Firebase", "Password salah atau email salah")
@@ -46,6 +50,11 @@ class login : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        val ivBackLogin = findViewById<ImageView>(R.id.ivBackLogin)
+        ivBackLogin.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
         }
 
         loginAlertDialog = Dialog(this)
@@ -74,13 +83,24 @@ class login : AppCompatActivity() {
 
 
         _btnLogin.setOnClickListener {
-            val _etnemail = _etEmail.text.toString()
-            val _etpassword = _etPassword.text.toString()
+            // Show the loader
+            val loaderFragment = LoaderFragment()
+            loaderFragment.isCancelable = false
+            loaderFragment.show(supportFragmentManager, "loader")
 
-            if (_etnemail.isNotEmpty() && _etpassword.isNotEmpty()) {
-                auth(_etnemail, _etpassword)
-            }
+            // Simulate a delay before navigating
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Dismiss the loader
+                loaderFragment.dismiss()
+
+                // Navigate to the next activity
+                val _etnemail = _etEmail.text.toString()
+                val _etpassword = _etPassword.text.toString()
+
+                if (_etnemail.isNotEmpty() && _etpassword.isNotEmpty()) {
+                    auth(_etnemail, _etpassword)
+                }
+            }, 1500) // Simulate 3-second delay
         }
-
     }
 }

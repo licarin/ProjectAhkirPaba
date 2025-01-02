@@ -75,14 +75,6 @@
             app:strokeColor="#000000"
             app:strokeWidth="1dp" />
 
-        <Button
-            android:id="@+id/buttonBook"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Book page"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

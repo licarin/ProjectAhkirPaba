@@ -1,6 +1,7 @@
 package com.paba.project
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -59,6 +60,12 @@ class signUp : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        val ivBackSignUP = findViewById<ImageView>(R.id.ivBackSignUP)
+
+        ivBackSignUP.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
         }
 
 

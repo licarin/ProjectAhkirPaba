@@ -46,8 +46,9 @@ class f_guide_search : Fragment() {
         recyclerView = view.findViewById(R.id.rvTourGuide)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        val email = arguments?.getString("email")
         // Initialize Adapter
-        guideAdapter = adapterGuides(filteredList)
+        guideAdapter = adapterGuides(filteredList, email)
         recyclerView.adapter = guideAdapter
 
         // Retrieve search query from arguments
@@ -149,9 +150,10 @@ class f_guide_search : Fragment() {
         private const val ARG_LOCATION = "location"
 
         @JvmStatic
-        fun newInstance(location: String) = f_guide_search().apply {
+        fun newInstance(location: String, email: String) = f_guide_search().apply {
             arguments = Bundle().apply {
                 putString(ARG_LOCATION, location)
+                putString("email", email)
             }
         }
 
