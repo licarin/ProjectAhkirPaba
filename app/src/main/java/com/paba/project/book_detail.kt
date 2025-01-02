@@ -100,7 +100,7 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
 
 
         val name = intent.getStringExtra("name")
-        var harga : Double? = 0.0
+        var harga: Double? = 0.0
 
         if (name != null) {
             db.collection("tbTourGuide").document(name)
@@ -132,7 +132,11 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                 }
                 .addOnFailureListener { exception ->
                     // Handle the error
-                    Toast.makeText(this, "Failed to fetch data: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Failed to fetch data: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
         }
 
@@ -143,7 +147,10 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                 if (!snapshot.isEmpty) {
                     for (document in snapshot.documents) {
                         // Add or update the 'price' field
-                        document.reference.update("price", 100000) // Replace 100 with your desired value
+                        document.reference.update(
+                            "price",
+                            100000
+                        ) // Replace 100 with your desired value
                             .addOnSuccessListener {
                                 println("Successfully updated document: ${document.id}")
                             }
@@ -192,20 +199,31 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                             Log.d("AfterTextChangedDebug", "Coordinates received: $location")
                             if (mGoogleMap != null) {
                                 runOnUiThread {
-                                    Log.d("AfterTextChangedDebug", "Updating map with location: $location")
+                                    Log.d(
+                                        "AfterTextChangedDebug",
+                                        "Updating map with location: $location"
+                                    )
                                     mGoogleMap?.clear()
                                     mGoogleMap?.addMarker(
                                         MarkerOptions()
                                             .position(location)
                                             .title("Marker at ${s.toString()}")
                                     )
-                                    mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f))
+                                    mGoogleMap?.moveCamera(
+                                        CameraUpdateFactory.newLatLngZoom(
+                                            location,
+                                            15.0f
+                                        )
+                                    )
                                 }
                             } else {
                                 Log.d("MapDebug", "GoogleMap is not ready yet.")
                             }
                         } ?: run {
-                            Log.d("LocationSearch", "Address not found or invalid for: ${s.toString()}")
+                            Log.d(
+                                "LocationSearch",
+                                "Address not found or invalid for: ${s.toString()}"
+                            )
                         }
                     }
                 }
@@ -285,11 +303,20 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                 // Navigate to the next activity
                 val intent = Intent(this, book_payment::class.java).apply {
                     putExtra("SEARCH_LOCATION", autoCompleteTextView.text.toString())
-                    putExtra("ADDRESS_DETAIL", findViewById<EditText>(R.id.addressDetail).text.toString())
+                    putExtra(
+                        "ADDRESS_DETAIL",
+                        findViewById<EditText>(R.id.addressDetail).text.toString()
+                    )
                     putExtra("NOTES", findViewById<EditText>(R.id.notes).text.toString())
-                    putExtra("TASK_DATE", findViewById<TextInputEditText>(R.id.taskDateField2).text.toString())
+                    putExtra(
+                        "TASK_DATE",
+                        findViewById<TextInputEditText>(R.id.taskDateField2).text.toString()
+                    )
                     putExtra("DURATION_VALUE", taskDurValue.toString())
-                    putExtra("NOTES2", findViewById<EditText>(R.id.editTextTextMultiLine).text.toString())
+                    putExtra(
+                        "NOTES2",
+                        findViewById<EditText>(R.id.editTextTextMultiLine).text.toString()
+                    )
                     putExtra("PRICE", harga)
                     putExtra("USER_EMAIL", email)
                 }

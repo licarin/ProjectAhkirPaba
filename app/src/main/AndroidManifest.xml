@@ -21,8 +21,7 @@
         tools:targetApi="29">
         <activity
             android:name=".search_tour_guide"
-            android:exported="false">
-        </activity>
+            android:exported="false"/>
 
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
@@ -47,8 +46,12 @@
 
         <activity
             android:name=".guide_detail"
-            android:exported="false">
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".book_payment"
@@ -69,12 +72,8 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

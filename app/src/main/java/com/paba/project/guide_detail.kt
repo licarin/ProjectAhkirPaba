@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -18,37 +17,40 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import org.osmdroid.config.Configuration
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapController
 import android.Manifest
 import android.location.Geocoder
-import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import android.location.Location
+import android.text.Editable
+import android.text.TextWatcher
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import java.util.Locale
 
-class guide_detail : AppCompatActivity() {
+class guide_detail : AppCompatActivity(), OnMapReadyCallback {
     lateinit var _autoComplete: AutoCompleteTextView
-    lateinit var myLocationOverlay: MyLocationNewOverlay
-    lateinit var _gmaps: MapView
-    lateinit var _address : TextView
-    private val locationPermissionCode = 100
+    lateinit var _mapAutoComplete: AutoCompleteTextView
+    private var mGoogleMap: GoogleMap? = null
+    private val db = Firebase.firestore
+    private var suggestions = mutableListOf<String>()
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    lateinit var _address: TextView
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_guide_detail)
-        Configuration.getInstance().load(this, applicationContext.getSharedPreferences("osmdroid", MODE_PRIVATE))
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        // inisialisasi database
-        val db = Firebase.firestore
 
         // inisialisasi variable
         var _minusIcon = findViewById<TextView>(R.id.minusIcon)
@@ -60,15 +62,47 @@ class guide_detail : AppCompatActivity() {
         var _etNotes = findViewById<EditText>(R.id.et_notes)
         _address = findViewById<TextView>(R.id.tvAddressNow)
 
-        _gmaps = findViewById<MapView>(R.id.gmaps)
+        // inisialisasi maps
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        // setup location permission
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnCompleteListener({ task ->
+                if (task.isSuccessful && task.result != null) {
+                    val location: Location = task.result
+                    val address = getAddressFromLocation(location.latitude, location.longitude)
+                    _address.setText(address)
+                    Log.d(
+                        "CurrentDebug",
+                        "Current Location: Lat: ${location.latitude}, Lng: ${location.longitude}"
+                    )
+                    val latLng = LatLng(location.latitude, location.longitude)
+                    mGoogleMap?.addMarker(
+                        MarkerOptions()
+                            .position(latLng)
+                            .title("Marker at current location")
+                    )
+                    // Move camera to the current location with zoom level 15
+                    mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f))
+                } else {
+                    Log.d("CurrentDebug", "Failed to get location")
+                }
+            })
         } else {
-            enableLocation()
+            // Request permissions
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                42
+            )
         }
+
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.gmaps) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         // set on click listener
         _minusIcon.setOnClickListener {
@@ -102,7 +136,7 @@ class guide_detail : AppCompatActivity() {
         _btnOrder.setOnClickListener {
             var dataBaru = guideNowOrders(
                 id = random,
-                location = "Galaxy Mall 3",
+                location = _mapAutoComplete.text.toString(),
                 price = _tvPrice.text.toString().toInt(),
                 language = _autoComplete.text.toString(),
                 duration = _duration.text.toString().toInt(),
@@ -127,27 +161,115 @@ class guide_detail : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        // auto complete language
         _autoComplete = findViewById<AutoCompleteTextView>(R.id.tv_languange_value)
         val language = resources.getStringArray(R.array.languages)
         val adapter = ArrayAdapter(this, R.layout.dropdown_menu, language)
         _autoComplete.setAdapter(adapter)
-    }
 
-    fun enableLocation() {
-        myLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(this), _gmaps)
-        myLocationOverlay.enableMyLocation()
-        myLocationOverlay.runOnFirstFix {
-            runOnUiThread {
-                val location = myLocationOverlay.myLocation
-                if (location != null) {
-                    _gmaps.controller.setZoom(15.0)
-                    _gmaps.controller.setCenter(location)
-                    val address = getAddressFromLocation(location.latitude, location.longitude)
-                    _address.setText(address)
+        // auto complete location
+        _mapAutoComplete = findViewById<AutoCompleteTextView>(R.id.searchLocation)
+        val locationAdapter = ArrayAdapter(this, R.layout.dropdown_menu, suggestions)
+        _mapAutoComplete.setAdapter(locationAdapter)
+
+        // text watcher
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                Log.d("AutoCompleteDebug", "onTextChanged triggered with input: $s")
+                if (s.isNullOrEmpty()) {
+                    suggestions.clear()
+                    locationAdapter.clear()
+                    locationAdapter.notifyDataSetChanged()
+                    Log.d("AutoCompleteDebug", "Query is empty. Suggestions cleared.")
+                    return
+                }
+                fetchSuggestions(s.toString(), locationAdapter)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (!s.isNullOrEmpty() && s.length > 5) {
+                    Log.d("AfterTextChangedDebug", "Triggering fetch for: ${s.toString()}")
+                    fetchCoordinatesFromFirebase(s.toString()) { latLng ->
+                        latLng?.let { location ->
+                            Log.d("AfterTextChangedDebug", "Coordinates received: $location")
+                            if (mGoogleMap != null) {
+                                runOnUiThread {
+                                    Log.d(
+                                        "AfterTextChangedDebug",
+                                        "Updating map with location: $location"
+                                    )
+                                    mGoogleMap?.clear()
+                                    mGoogleMap?.addMarker(
+                                        MarkerOptions()
+                                            .position(location)
+                                            .title("Marker at ${s.toString()}")
+                                    )
+                                    mGoogleMap?.moveCamera(
+                                        CameraUpdateFactory.newLatLngZoom(
+                                            location,
+                                            15.0f
+                                        )
+                                    )
+                                }
+                            } else {
+                                Log.d("MapDebug", "GoogleMap is not ready yet.")
+                            }
+                        } ?: run {
+                            Log.d(
+                                "LocationSearch",
+                                "Address not found or invalid for: ${s.toString()}"
+                            )
+                        }
+                    }
                 }
             }
         }
-        _gmaps.overlays.add(myLocationOverlay)
+
+        // update AutoCompleteTextView text on suggestion selection
+        _mapAutoComplete.setOnItemClickListener { parent, _, position, _ ->
+            val selectedSuggestion = parent.getItemAtPosition(position) as String
+            _mapAutoComplete.removeTextChangedListener(textWatcher)
+
+            _mapAutoComplete.setText(selectedSuggestion)
+            _mapAutoComplete.dismissDropDown()
+
+            // reattach the TextWatcher
+            _mapAutoComplete.addTextChangedListener(textWatcher)
+
+            Log.d("AutoCompleteDebug", "Suggestion selected: $selectedSuggestion")
+        }
+
+        // attach the TextWatcher
+        _mapAutoComplete.addTextChangedListener(textWatcher)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mGoogleMap = googleMap
+        Log.d("MapDebug", "GoogleMap is ready.")
+    }
+
+    private fun fetchCoordinatesFromFirebase(address: String, callback: (LatLng?) -> Unit) {
+        val dbRef = db.collection("addresses")
+        dbRef.document(address).get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                val lat = document.getDouble("latitude")
+                val lng = document.getDouble("longitude")
+
+                if (lat != null && lng != null) {
+                    callback(LatLng(lat, lng))
+                } else {
+                    callback(null)
+                }
+            } else {
+                callback(null)
+            }
+        }.addOnFailureListener {
+            Log.d("FirebaseError", "Error fetching data")
+            callback(null)
+        }
     }
 
     fun getAddressFromLocation(latitude: Double, longitude: Double): String {
@@ -157,6 +279,41 @@ class guide_detail : AppCompatActivity() {
             addresses[0].getAddressLine(0)
         } else {
             "Alamat tidak ditemukan"
+        }
+    }
+
+    private fun fetchSuggestions(query: String, adapter: ArrayAdapter<String>) {
+        val queryFields = listOf("name", "city", "province", "state")
+        val tempSuggestions = mutableSetOf<String>()
+
+        val queriesDone = queryFields.size
+        var processedQueries = 0
+
+        queryFields.forEach { field ->
+            db.collection("addresses")
+                .whereGreaterThanOrEqualTo(field, query)
+                .whereLessThanOrEqualTo(field, query + '\uf8ff')
+                .get()
+                .addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        document.getString(field)?.let { tempSuggestions.add(it) }
+                    }
+                    processedQueries++
+                    if (processedQueries == queriesDone) {
+                        suggestions.clear()
+                        suggestions.addAll(tempSuggestions)
+
+                        // update adapter
+                        adapter.clear()
+                        adapter.addAll(suggestions)
+                        adapter.notifyDataSetChanged()
+
+                        Log.d("AutoCompleteDebug", "Suggestions updated: $suggestions")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("FirestoreDebug", "Error fetching data for field $field", exception)
+                }
         }
     }
 }
