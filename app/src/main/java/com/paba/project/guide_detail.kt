@@ -20,6 +20,8 @@ import com.google.firebase.ktx.Firebase
 import android.Manifest
 import android.location.Geocoder
 import android.location.Location
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -144,15 +146,23 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
                 notes = _etNotes.text.toString()
             )
 
-            var intent = Intent(this, book_payment::class.java)
-            intent.putExtra("SEARCH_LOCATION", dataBaru.location.toString())
-            intent.putExtra("PRICE", dataBaru.price.toDouble())
-            intent.putExtra("LANGUAGE", dataBaru.language.toString())
-            intent.putExtra("DURATION_VALUE", dataBaru.duration.toString())
-            intent.putExtra("CURRENT_LOCATION", _address.text.toString())
-            intent.putExtra("NOTES2", dataBaru.notes.toString())
-            intent.putExtra("USER_EMAIL", email)
-            startActivity(intent)
+            val loaderFragment = LoaderFragment()
+            loaderFragment.isCancelable = false
+            loaderFragment.show(supportFragmentManager, "loader")
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Dismiss the loader
+                loaderFragment.dismiss()
+
+                var intent = Intent(this, book_payment::class.java)
+                intent.putExtra("SEARCH_LOCATION", dataBaru.location.toString())
+                intent.putExtra("PRICE", dataBaru.price.toDouble())
+                intent.putExtra("LANGUAGE", dataBaru.language.toString())
+                intent.putExtra("DURATION_VALUE", dataBaru.duration.toString())
+                intent.putExtra("CURRENT_LOCATION", _address.text.toString())
+                intent.putExtra("NOTES2", dataBaru.notes.toString())
+                intent.putExtra("USER_EMAIL", email)
+                startActivity(intent)
+            }, 1500)
         }
     }
 
