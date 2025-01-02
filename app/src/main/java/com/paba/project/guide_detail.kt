@@ -63,6 +63,7 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
         var _btnOrder = findViewById<CardView>(R.id.btnOrder)
         var _etNotes = findViewById<EditText>(R.id.et_notes)
         var email = intent.getStringExtra("email").toString()
+        var _backButton = findViewById<TextView>(R.id.backButton)
         _address = findViewById<TextView>(R.id.tvAddressNow)
 
         // inisialisasi maps
@@ -163,6 +164,11 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
                 intent.putExtra("USER_EMAIL", email)
                 startActivity(intent)
             }, 1500)
+        }
+
+        // back button
+        _backButton.setOnClickListener {
+            finish()
         }
     }
 
