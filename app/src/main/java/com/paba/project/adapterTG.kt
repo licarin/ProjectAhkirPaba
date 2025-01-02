@@ -37,6 +37,6 @@ class adapterTG (private val listTG : ArrayList<tourGuide>) : RecyclerView.Adapt
         holder._tvNama.text = tourGuide.name
         holder._tvLokasi.text = tourGuide.lokasi
         holder._tvRating.text = tourGuide.rating
-        holder._tvReviews.text = tourGuide.reviews
+        holder._tvReviews.text = " (" + tourGuide.reviews + " reviews)"
     }
 }

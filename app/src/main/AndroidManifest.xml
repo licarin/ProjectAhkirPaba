@@ -36,6 +36,12 @@
             android:value="@string/google_map_api_key" />
 
         <activity
+            android:name=".tourGuide_profile"
+            android:exported="false">
+
+        </activity>
+
+        <activity
             android:name=".guide_detail"
             android:exported="true">
             <intent-filter>
