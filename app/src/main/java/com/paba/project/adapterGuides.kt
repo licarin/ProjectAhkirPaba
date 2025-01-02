@@ -33,10 +33,10 @@ class adapterGuides (private val listGuides : ArrayList<tour_guide_detail>) : Re
             holder._ivFoto.setImageResource(imageResId)
         }
         holder._tvNama.text = tourGuideDetail.name
-        holder._tvLokasi.text = tourGuideDetail.location
-        holder._tvCity.text = ", ${tourGuideDetail.city}"
+        holder._tvLokasi.text = "${tourGuideDetail.location}, "
+        holder._tvCity.text = tourGuideDetail.city
         holder._tvLanguages.text = tourGuideDetail.language
-        holder._tvPrice.text = "Rp ${tourGuideDetail.price}"
+        holder._tvPrice.text = "Rp ${f_guide_search.formatPrice(tourGuideDetail.price)}"
         holder._tvRating.text = tourGuideDetail.rating
         holder._tvReviewers.text = "(${tourGuideDetail.reviews} reviews)"
 
