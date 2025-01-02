@@ -60,6 +60,7 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
         var _tvPrice = findViewById<TextView>(R.id.tvPrice)
         var _btnOrder = findViewById<CardView>(R.id.btnOrder)
         var _etNotes = findViewById<EditText>(R.id.et_notes)
+        var email = intent.getStringExtra("email").toString()
         _address = findViewById<TextView>(R.id.tvAddressNow)
 
         // inisialisasi maps
@@ -154,7 +155,12 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
                 }
 
             var intent = Intent(this, book_payment::class.java)
-            intent.putExtra("order_id", dataBaru.id)
+            intent.putExtra("SEARCH_LOCATION", dataBaru.location.toString())
+            intent.putExtra("PRICE", dataBaru.price.toDouble())
+            intent.putExtra("LANGUAGE", dataBaru.language.toString())
+            intent.putExtra("DURATION_VALUE", dataBaru.duration.toString())
+            intent.putExtra("NOTES2", dataBaru.notes.toString())
+            intent.putExtra("USER_EMAIL", email)
             startActivity(intent)
         }
     }
