@@ -48,7 +48,7 @@ class f_guide_search : Fragment() {
 
         val email = arguments?.getString("email")
         // Adapter
-        guideAdapter = adapterGuides(filteredList, email)
+        guideAdapter = adapterGuides(filteredList, email, parentFragmentManager)
         recyclerView.adapter = guideAdapter
 
         arguments?.getString(ARG_LOCATION)?.let { location ->
@@ -101,7 +101,7 @@ class f_guide_search : Fragment() {
                                 city = document.getString("kota") ?: "",
                                 language = document.getString("bahasa") ?: "",
                                 price = document.getString("harga") ?: "",
-                                rating = document.getString("rating") ?: "0.0",
+                                rating = document.getDouble("rating").toString() ?: "0.0",
                                 reviews = document.getString("reviews") ?: ""
                             )
                             guideList.add(guide)

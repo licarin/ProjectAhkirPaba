@@ -2,6 +2,9 @@ package com.paba.project
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -44,18 +47,39 @@ class tourGuide_profile : AppCompatActivity() {
         ivBack.setOnClickListener {
             val intent = Intent(this, search_tour_guide::class.java)
             intent.putExtra("location", location) // Pass location back
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
             finish() // Optional: Close current activity
         }
 
         btnBook.setOnClickListener {
-            val email = intent.getStringExtra("email")
-            val intent = Intent(this, book_detail::class.java)
-            intent.putExtra("name", name)
-            if (email != null) {
-                intent.putExtra("email", email)
-            }
-            startActivity(intent)
+            val loaderFragment = LoaderFragment()
+            loaderFragment.isCancelable = false
+            loaderFragment.show(supportFragmentManager, "loader")
+
+            // Simulate a delay before navigating
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Dismiss the loader
+                loaderFragment.dismiss()
+                val email = intent.getStringExtra("email")
+                val intent = Intent(this, book_detail::class.java)
+                Log.d("name", "name: $name")
+                Log.d("email", "email: $email")
+                if (email != null) {
+                    intent.putExtra("name", name)
+                    intent.putExtra("email", email)
+                    intent.putExtra("location", location)
+                    intent.putExtra("city", city)
+                    intent.putExtra("language", language)
+                    intent.putExtra("price", price)
+                    intent.putExtra("rating", rating)
+                    intent.putExtra("reviews", reviews)
+                    intent.putExtra("profile_pic", profilePic)
+                    intent.putExtra("aboutMe", aboutMe)
+                }
+                startActivity(intent)
+
+            }, 1500) // Simulate 3-second delay
         }
 
         tvTGName.text = name

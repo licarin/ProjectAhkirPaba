@@ -21,8 +21,7 @@
         tools:targetApi="29">
         <activity
             android:name=".search_tour_guide"
-            android:exported="false">
-        </activity>
+            android:exported="false"/>
 
         <!--
              TODO: Before you run your application, you need a Google Maps API key.

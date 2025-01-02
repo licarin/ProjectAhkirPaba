@@ -2,15 +2,18 @@ package com.paba.project
 
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 
-class adapterGuides (private val listGuides : ArrayList<tour_guide_detail>, private val email: String?) : RecyclerView.Adapter<adapterGuides.ListViewHolder>() {
+class adapterGuides (private val listGuides : ArrayList<tour_guide_detail>, private val email: String?, private val fragmentManager: FragmentManager) : RecyclerView.Adapter<adapterGuides.ListViewHolder>() {
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var _ivFoto = itemView.findViewById<ImageView>(R.id.guideImage)
         var _tvNama = itemView.findViewById<TextView>(R.id.guideName)
@@ -44,22 +47,32 @@ class adapterGuides (private val listGuides : ArrayList<tour_guide_detail>, priv
 
 
         holder.itemView.setOnClickListener {
-            Log.d("Email", "Email sent: $email")
-            val context = holder.itemView.context
-            val intent = Intent(context, tourGuide_profile::class.java)
-            intent.putExtra("name", tourGuideDetail.name)
-            intent.putExtra("location", tourGuideDetail.location)
-            intent.putExtra("city", tourGuideDetail.city)
-            intent.putExtra("language", tourGuideDetail.language)
-            intent.putExtra("price", "Rp ${tourGuideDetail.price}")
-            intent.putExtra("rating", tourGuideDetail.rating)
-            intent.putExtra("reviews", tourGuideDetail.reviews)
-            intent.putExtra("profile_pic", tourGuideDetail.profile_pic)
-            intent.putExtra("aboutMe", tourGuideDetail.aboutMe)
-            if (email != null) {
-                intent.putExtra("email", email)
-            }
-            context.startActivity(intent)
+            val loaderFragment = LoaderFragment()
+            loaderFragment.isCancelable = false
+            loaderFragment.show(fragmentManager, "loader")
+
+            // Simulate a delay before navigating
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Dismiss the loader
+                loaderFragment.dismiss()
+
+                Log.d("Email", "Email sent: $email")
+                val context = holder.itemView.context
+                val intent = Intent(context, tourGuide_profile::class.java)
+                intent.putExtra("name", tourGuideDetail.name)
+                intent.putExtra("location", tourGuideDetail.location)
+                intent.putExtra("city", tourGuideDetail.city)
+                intent.putExtra("language", tourGuideDetail.language)
+                intent.putExtra("price", "Rp ${tourGuideDetail.price}")
+                intent.putExtra("rating", tourGuideDetail.rating)
+                intent.putExtra("reviews", tourGuideDetail.reviews)
+                intent.putExtra("profile_pic", tourGuideDetail.profile_pic)
+                intent.putExtra("aboutMe", tourGuideDetail.aboutMe)
+                if (email != null) {
+                    intent.putExtra("email", email)
+                }
+                context.startActivity(intent)
+            }, 1500) // Simulate 3-second delay
         }
     }
 

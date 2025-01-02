@@ -57,6 +57,13 @@ class home : AppCompatActivity() {
             startActivity(intent)
         }
 
+        var imageView18 = findViewById<ImageView>(R.id.imageView18)
+        imageView18.setOnClickListener {
+            val intent = Intent(this, guide_detail::class.java)
+            intent.putExtra("email", email)
+            startActivity(intent)
+        }
+
         recyclerView = findViewById(R.id.rvTourGuide)
         recyclerView.layoutManager = LinearLayoutManager(this)
 

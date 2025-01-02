@@ -38,8 +38,10 @@ import com.google.firebase.ktx.Firebase
 import java.util.Calendar
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import java.util.Locale
 
 
 class book_detail : AppCompatActivity(), OnMapReadyCallback {
@@ -47,6 +49,9 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
     private val db = Firebase.firestore
     private var suggestions = mutableListOf<String>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var address: String
+    private lateinit var postalCode: String
+    private lateinit var postalCodeTour: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +61,25 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        val name = intent.getStringExtra("name") // Get the name from the original Intent
+        val backButton = findViewById<ImageView>(R.id.backButton)
+        backButton.setOnClickListener {
+            val newIntent = Intent(this, tourGuide_profile::class.java)
+            // Explicitly pass all data from the original Intent
+            newIntent.putExtra("location", intent.getStringExtra("location"))
+            newIntent.putExtra("city", intent.getStringExtra("city"))
+            newIntent.putExtra("language", intent.getStringExtra("language"))
+            newIntent.putExtra("price", intent.getStringExtra("price"))
+            newIntent.putExtra("rating", intent.getStringExtra("rating"))
+            newIntent.putExtra("reviews", intent.getStringExtra("reviews"))
+            newIntent.putExtra("profile_pic", intent.getStringExtra("profile_pic"))
+            newIntent.putExtra("aboutMe", intent.getStringExtra("aboutMe"))
+            newIntent.putExtra("name", name) // Explicitly add the name
+            newIntent.putExtra("email", intent.getStringExtra("email"))
+
+            startActivity(newIntent)
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -68,6 +92,8 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
             fusedLocationClient.lastLocation.addOnCompleteListener({ task ->
                 if (task.isSuccessful && task.result != null) {
                     val location: Location = task.result
+                    address = getAddressFromLocation(location.latitude, location.longitude)
+                    postalCode = getPostalCodeFromLocation(location.latitude, location.longitude)
                     Log.d(
                         "CurrentDebug",
                         "Current Location: Lat: ${location.latitude}, Lng: ${location.longitude}"
@@ -99,8 +125,7 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
         val guideLanguages = findViewById<TextView>(R.id.guideLanguages)
 
 
-        val name = intent.getStringExtra("name")
-        var harga : Double? = 0.0
+        var harga: Double? = 0.0
 
         if (name != null) {
             db.collection("tbTourGuide").document(name)
@@ -132,7 +157,11 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                 }
                 .addOnFailureListener { exception ->
                     // Handle the error
-                    Toast.makeText(this, "Failed to fetch data: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Failed to fetch data: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
         }
 
@@ -143,7 +172,10 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                 if (!snapshot.isEmpty) {
                     for (document in snapshot.documents) {
                         // Add or update the 'price' field
-                        document.reference.update("price", 100000) // Replace 100 with your desired value
+                        document.reference.update(
+                            "price",
+                            100000
+                        ) // Replace 100 with your desired value
                             .addOnSuccessListener {
                                 println("Successfully updated document: ${document.id}")
                             }
@@ -192,20 +224,32 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                             Log.d("AfterTextChangedDebug", "Coordinates received: $location")
                             if (mGoogleMap != null) {
                                 runOnUiThread {
-                                    Log.d("AfterTextChangedDebug", "Updating map with location: $location")
+                                    Log.d(
+                                        "AfterTextChangedDebug",
+                                        "Updating map with location: $location"
+                                    )
+                                    postalCodeTour = getPostalCodeFromLocation(latLng.latitude, latLng.longitude)
                                     mGoogleMap?.clear()
                                     mGoogleMap?.addMarker(
                                         MarkerOptions()
                                             .position(location)
                                             .title("Marker at ${s.toString()}")
                                     )
-                                    mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f))
+                                    mGoogleMap?.moveCamera(
+                                        CameraUpdateFactory.newLatLngZoom(
+                                            location,
+                                            15.0f
+                                        )
+                                    )
                                 }
                             } else {
                                 Log.d("MapDebug", "GoogleMap is not ready yet.")
                             }
                         } ?: run {
-                            Log.d("LocationSearch", "Address not found or invalid for: ${s.toString()}")
+                            Log.d(
+                                "LocationSearch",
+                                "Address not found or invalid for: ${s.toString()}"
+                            )
                         }
                     }
                 }
@@ -285,16 +329,49 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                 // Navigate to the next activity
                 val intent = Intent(this, book_payment::class.java).apply {
                     putExtra("SEARCH_LOCATION", autoCompleteTextView.text.toString())
-                    putExtra("ADDRESS_DETAIL", findViewById<EditText>(R.id.addressDetail).text.toString())
+
+                    putExtra(
+                        "ADDRESS_DETAIL",
+                        findViewById<EditText>(R.id.addressDetail).text.toString()
+                    )
                     putExtra("NOTES", findViewById<EditText>(R.id.notes).text.toString())
-                    putExtra("TASK_DATE", findViewById<TextInputEditText>(R.id.taskDateField2).text.toString())
+                    putExtra(
+                        "TASK_DATE",
+                        findViewById<TextInputEditText>(R.id.taskDateField2).text.toString()
+                    )
                     putExtra("DURATION_VALUE", taskDurValue.toString())
-                    putExtra("NOTES2", findViewById<EditText>(R.id.editTextTextMultiLine).text.toString())
+                    putExtra(
+                        "NOTES2",
+                        findViewById<EditText>(R.id.editTextTextMultiLine).text.toString()
+                    )
                     putExtra("PRICE", harga)
                     putExtra("USER_EMAIL", email)
+                    putExtra("CURRENT_LOCATION", address)
+                    putExtra("POSTAL_CODE", postalCode)
+                    putExtra("POSTAL_CODE_TOUR", postalCodeTour)
                 }
                 startActivity(intent)
             }, 1500)
+        }
+    }
+
+    fun getAddressFromLocation(latitude: Double, longitude: Double): String {
+        val geocoder = Geocoder(this, Locale.getDefault())
+        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+        return if (!addresses.isNullOrEmpty()) {
+            addresses[0].getAddressLine(0)
+        } else {
+            "Alamat tidak ditemukan"
+        }
+    }
+
+    fun getPostalCodeFromLocation(latitude: Double, longitude: Double): String {
+        val geocoder = Geocoder(this, Locale.getDefault())
+        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+        return if (!addresses.isNullOrEmpty()) {
+            addresses[0].postalCode ?: "Postal code not available"
+        } else {
+            "Postal code not found"
         }
     }
 
