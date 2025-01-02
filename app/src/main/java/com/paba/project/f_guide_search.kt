@@ -42,21 +42,20 @@ class f_guide_search : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_f_guide_search, container, false)
 
-        // Initialize RecyclerView
+        // RecyclerView
         recyclerView = view.findViewById(R.id.rvTourGuide)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         val email = arguments?.getString("email")
-        // Initialize Adapter
+        // Adapter
         guideAdapter = adapterGuides(filteredList, email)
         recyclerView.adapter = guideAdapter
 
-        // Retrieve search query from arguments
         arguments?.getString(ARG_LOCATION)?.let { location ->
             loadGuidesFromFirebase(location)
         }
 
-        // Initialize Sorting Views
+        // Sorting
         llSortOptionStar = view.findViewById(R.id.llSortOption)
         llSortOptionPrice = view.findViewById(R.id.llSortOptionPrice)
         tvSortStar = view.findViewById(R.id.tvFilterOption)
@@ -64,7 +63,7 @@ class f_guide_search : Fragment() {
         ivArrowStar = view.findViewById(R.id.ivArrow)
         ivArrowPrice = view.findViewById(R.id.ivArrowPrice)
 
-        // Set click listeners for sorting
+        // Sorting Fun
         llSortOptionStar.setOnClickListener {
             sortGuides("star", isStarAscending)
             updateSortUI(tvSortStar, ivArrowStar, isStarAscending)

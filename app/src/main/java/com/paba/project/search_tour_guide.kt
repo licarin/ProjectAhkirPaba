@@ -25,20 +25,23 @@ class search_tour_guide : AppCompatActivity() {
             insets
         }
 
-        // Retrieve location from Intent
         val location = intent.getStringExtra("location")
         val email = intent.getStringExtra("email") ?: ""
 
         if (location != null) {
             Log.d("SearchTourGuide", "Location received: $location")
-            // Load the f_guide_search fragment with the location
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, f_guide_search.newInstance(location.toString(), email))
                 .commit()
             finish()
         } else {
-            // Handle case where location is null
-            // For example, show a default fragment or error message
+            val initialFragment = f_main_search()
+            val bundle = Bundle()
+            bundle.putString("email", email)
+            initialFragment.arguments = bundle
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, initialFragment)
+                .commit()
         }
 
         // fragment mainn

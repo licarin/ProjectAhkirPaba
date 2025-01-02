@@ -21,7 +21,6 @@ class f_main_search : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_f_main_search, container, false)
 
-        // Initialize Firestore
         db = FirebaseFirestore.getInstance()
 
         // Setup button

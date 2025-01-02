@@ -2,10 +2,14 @@ package com.paba.project
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +24,7 @@ class home : AppCompatActivity() {
     private val tourGuideList = ArrayList<tourGuide>()
     var db = Firebase.firestore
     var email = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +68,57 @@ class home : AppCompatActivity() {
         adapter = adapterTG(tourGuideList)
         recyclerView.adapter = adapter
         fetchTourGuideData()
+
+        val viewjkt = findViewById<FrameLayout>(R.id.jakartaSection)
+        val viewsby = findViewById<FrameLayout>(R.id.surabayaSection)
+        val viewbdg = findViewById<FrameLayout>(R.id.bandungSection)
+        val viewbali = findViewById<FrameLayout>(R.id.baliSection)
+        val viewygk = findViewById<FrameLayout>(R.id.yogyakartaSection)
+        val viewmdn = findViewById<FrameLayout>(R.id.medanSection)
+
+        viewjkt.setOnClickListener {
+            tekanButtonKota("Jakarta")
+        }
+
+        viewsby.setOnClickListener {
+            tekanButtonKota("Surabaya")
+        }
+
+        viewbdg.setOnClickListener {
+            tekanButtonKota("Bandung")
+        }
+
+        viewbali.setOnClickListener {
+            tekanButtonKota("Bali")
+        }
+
+        viewygk.setOnClickListener {
+            tekanButtonKota("Yogyakarta")
+        }
+
+        viewmdn.setOnClickListener {
+            tekanButtonKota("Medan")
+        }
+
+    }
+
+    private fun tekanButtonKota(location: String) {
+        db.collection("tbTourGuide")
+            .whereEqualTo("kota", location)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    Toast.makeText(this, "No guides found in $location", Toast.LENGTH_SHORT).show()
+                } else {
+                    val intent = Intent(this, search_tour_guide::class.java)
+                    intent.putExtra("location", location)
+                    intent.putExtra("email", email)
+                    startActivity(intent)
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to fetch data: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun fetchTourGuideData() {
