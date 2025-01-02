@@ -28,12 +28,13 @@ class search_tour_guide : AppCompatActivity() {
         val location = intent.getStringExtra("location")
         val email = intent.getStringExtra("email") ?: ""
 
+        Log.d("SearchTourGuide", "Email received: $email")
+
         if (location != null) {
             Log.d("SearchTourGuide", "Location received: $location")
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, f_guide_search.newInstance(location.toString(), email))
                 .commit()
-            finish()
         } else {
             val initialFragment = f_main_search()
             val bundle = Bundle()
@@ -43,15 +44,6 @@ class search_tour_guide : AppCompatActivity() {
                 .replace(R.id.fragmentContainer, initialFragment)
                 .commit()
         }
-
-        // fragment mainn
-        val initialFragment = f_main_search()
-        val bundle = Bundle()
-        bundle.putString("email", email)
-        initialFragment.arguments = bundle
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, initialFragment)
-            .commit()
 
         // Search bar
         val searchBar = findViewById<EditText>(R.id.searchInput)

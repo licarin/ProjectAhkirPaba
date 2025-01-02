@@ -48,8 +48,6 @@
             android:fontFamily="@font/afacad_variable"
             android:text="Have a nice day"
             android:textColor="@color/white"
-            android:layout_marginHorizontal="32dp"
-            android:gravity="center"
             android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"

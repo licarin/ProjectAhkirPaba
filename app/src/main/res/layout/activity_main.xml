@@ -49,32 +49,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@mipmap/logo_foreground" />
 
-        <ImageView
-            android:id="@+id/imageView9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            app:layout_constraintEnd_toEndOf="@+id/btnToSignUp"
-            app:layout_constraintStart_toStartOf="@+id/btnToSignUp"
-            app:layout_constraintTop_toBottomOf="@+id/btnToSignUp"
-            app:srcCompat="@drawable/group_206" />
-
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="336dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="32dp"
-            android:backgroundTint="#ffffff"
-            android:fontFamily="@font/afacad"
-            android:text="Sign as Tour Guide"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="@+id/imageView9"
-            app:layout_constraintStart_toStartOf="@+id/imageView9"
-            app:layout_constraintTop_toBottomOf="@+id/imageView9"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
-            app:strokeColor="#000000"
-            app:strokeWidth="1dp" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
