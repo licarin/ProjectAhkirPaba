@@ -45,8 +45,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="16dp"
             android:fontFamily="@font/afacad_variable"
-            android:text="Have a nice day, Jammal!"
+            android:text="Have a nice day"
             android:textColor="@color/white"
             android:textSize="32sp"
             android:textStyle="bold"
@@ -89,6 +90,7 @@
                 android:layout_marginHorizontal="24dp"
                 android:elevation="10dp"
                 app:cardCornerRadius="20dp"
+                android:backgroundTint="@color/white"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
