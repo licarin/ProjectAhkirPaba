@@ -25,16 +25,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/group_98" />
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivProfilePicture"
             android:layout_width="85dp"
             android:layout_height="82dp"
             android:layout_marginTop="16dp"
+            android:scaleType="centerCrop"
+            tools:srcCompat="@tools:sample/avatars"
             android:contentDescription="Profile Picture"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTGName"
-            tools:srcCompat="@tools:sample/avatars" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MaterialComponents.ImageView.Circle" />
+
 
         <!-- Name -->
 
