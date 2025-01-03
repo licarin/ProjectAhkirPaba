@@ -347,8 +347,8 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
                     putExtra("PRICE", harga)
                     putExtra("USER_EMAIL", email)
                     putExtra("CURRENT_LOCATION", address)
-                    putExtra("POSTAL_CODE", 60221)
-                    putExtra("POSTAL_CODE_TOUR", 60221)
+                    putExtra("POSTAL_CODE", postalCode)
+                    putExtra("POSTAL_CODE_TOUR", postalCodeTour)
                 }
                 startActivity(intent)
             }, 1500)
