@@ -23,7 +23,7 @@ class home : AppCompatActivity() {
     private lateinit var adapter: adapterTG
     private val tourGuideList = ArrayList<tourGuide>()
     var db = Firebase.firestore
-    var email = ""
+    private lateinit var email: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,22 +36,20 @@ class home : AppCompatActivity() {
             insets
         }
 
-        if(intent.hasExtra("email")) {
-            val emailUser = intent.getStringExtra("email") ?: ""
-            db.collection("tbUser")
-                .document(emailUser)
-                .get()
-                .addOnSuccessListener { result ->
-                    if (result.exists()) {
-                        val data = result.data
-                        email = data?.get("email").toString()
-                    }
-                }
-        }
+        email = intent.getStringExtra("email") ?: ""
+        Log.d("email", "email: $email")
 
 //        search section
         val imageView8 = findViewById<ImageView>(R.id.imageView8)
         imageView8.setOnClickListener {
+            val intent = Intent(this, search_tour_guide::class.java)
+            intent.putExtra("email", email)
+            startActivity(intent)
+        }
+
+//        tombol book now
+        val imageView17 = findViewById<ImageView>(R.id.imageView17)
+        imageView17.setOnClickListener {
             val intent = Intent(this, search_tour_guide::class.java)
             intent.putExtra("email", email)
             startActivity(intent)
@@ -117,10 +115,12 @@ class home : AppCompatActivity() {
                 if (documents.isEmpty) {
                     Toast.makeText(this, "No guides found in $location", Toast.LENGTH_SHORT).show()
                 } else {
-                    val intent = Intent(this, search_tour_guide::class.java)
-                    intent.putExtra("location", location)
-                    intent.putExtra("email", email)
-                    startActivity(intent)
+                    Log.d("home", "Location: $location")
+                    Log.d("home", "Email: $email")
+                    val newIntent = Intent(this, search_tour_guide::class.java)
+                    newIntent.putExtra("location", location)
+                    newIntent.putExtra("email", email)
+                    startActivity(newIntent)
                 }
             }
             .addOnFailureListener { e ->
