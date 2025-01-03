@@ -144,11 +144,10 @@ class home : AppCompatActivity() {
                     val reviews = document.getString("reviews") ?: ""
                     val bahasa = document.getString("bahasa") ?: ""
                     val jumlahClient = document.getLong("jumlahClient")?.toInt() ?: 0
-
                     val aboutMe = document.getString("aboutMe") ?: ""
                     val image = document.getString("image") ?: ""
 
-                    val tourGuide = tourGuide(name, lokasi, rating, harga, reviews, bahasa, jumlahClient, aboutMe, image)
+                    val tourGuide = tourGuide(name, lokasi, (document.getString("kota") ?:""), rating, harga, reviews, bahasa, jumlahClient, aboutMe, image)
                     tourGuideList.add(tourGuide)
                 }
                 adapter.notifyDataSetChanged()

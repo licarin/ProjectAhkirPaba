@@ -3,6 +3,7 @@ package com.paba.project
 data class tourGuide(
     val name: String,
     val lokasi: String,
+    val kota : String,
     val rating: Float,
     val harga: String,
     val reviews: String,
