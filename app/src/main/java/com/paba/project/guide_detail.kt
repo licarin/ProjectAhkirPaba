@@ -40,6 +40,8 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
     private var mGoogleMap: GoogleMap? = null
     private val db = Firebase.firestore
     private var suggestions = mutableListOf<String>()
+    lateinit var postalCode: String
+    lateinit var postalCodeTour: String
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     lateinit var _address: TextView
 
@@ -78,6 +80,7 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
                 if (task.isSuccessful && task.result != null) {
                     val location: Location = task.result
                     val address = getAddressFromLocation(location.latitude, location.longitude)
+                    postalCode = getPostalCodeFromLocation(location.latitude, location.longitude)
                     _address.setText(address)
                     Log.d(
                         "CurrentDebug",
@@ -160,6 +163,8 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
                 intent.putExtra("LANGUAGE", dataBaru.language.toString())
                 intent.putExtra("DURATION_VALUE", dataBaru.duration.toString())
                 intent.putExtra("CURRENT_LOCATION", _address.text.toString())
+                intent.putExtra("POSTAL_CODE", postalCode)
+                intent.putExtra("POSTAL_CODE_TOUR", postalCodeTour)
                 intent.putExtra("NOTES2", dataBaru.notes.toString())
                 intent.putExtra("USER_EMAIL", email)
                 startActivity(intent)
@@ -214,6 +219,7 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
                                         "AfterTextChangedDebug",
                                         "Updating map with location: $location"
                                     )
+                                    postalCodeTour = getPostalCodeFromLocation(latLng.latitude, latLng.longitude)
                                     mGoogleMap?.clear()
                                     mGoogleMap?.addMarker(
                                         MarkerOptions()
@@ -290,6 +296,16 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
         val addresses = geocoder.getFromLocation(latitude, longitude, 1)
         return if (!addresses.isNullOrEmpty()) {
             addresses[0].getAddressLine(0)
+        } else {
+            "Alamat tidak ditemukan"
+        }
+    }
+
+    fun getPostalCodeFromLocation(latitude: Double, longitude: Double): String {
+        val geocoder = Geocoder(this, Locale.getDefault())
+        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+        return if (!addresses.isNullOrEmpty()) {
+            addresses[0].postalCode
         } else {
             "Alamat tidak ditemukan"
         }
