@@ -138,7 +138,7 @@ class home : AppCompatActivity() {
                 tourGuideList.clear()
                 for (document in documents) {
                     val name = document.getString("nama") ?: ""
-                    val lokasi = document.getString("lokasi") ?: ""
+                    val lokasi = document.getString("lokasi") + ", " + document.getString("kota") ?: ""
                     val rating = document.getDouble("rating")?.toFloat() ?: 0f
                     val harga = document.getString("harga") ?: ""
                     val reviews = document.getString("reviews") ?: ""
