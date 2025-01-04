@@ -45,8 +45,19 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     lateinit var _address: TextView
 
+    data class dataBaru (
+        var city: String,
+        var latitude: Double,
+        var longitude: Double,
+        var name: String,
+        var price: Int,
+        var province: String,
+        var state: String
+    )
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_guide_detail)
@@ -317,6 +328,28 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
 
         val queriesDone = queryFields.size
         var processedQueries = 0
+
+        if (query.length >= 5) {
+            var dataBarus = dataBaru(
+                city = query.toString(),
+                latitude = 0.0,
+                longitude = 0.0,
+                name = query.toString(),
+                price = 0,
+                province = query.toString(),
+                state = query.toString()
+            )
+
+            db.collection("addresses")
+                .document(query)
+                .set(dataBarus)
+                .addOnSuccessListener {
+                    Log.d("Firebase", "Data berhasil ditambahkan")
+                }
+                .addOnFailureListener {
+                    Log.d("Firebase", it.message.toString())
+                }
+        }
 
         queryFields.forEach { field ->
             db.collection("addresses")
