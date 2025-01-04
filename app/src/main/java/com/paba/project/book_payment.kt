@@ -313,6 +313,7 @@ class book_payment : AppCompatActivity() {
                 }
                 // Redirect to home activity after transaction is completed
                 val intent = Intent(this, home::class.java)
+                intent.putExtra("email", customerDetails.email)
                 startActivity(intent)
                 finish()
             } else {
