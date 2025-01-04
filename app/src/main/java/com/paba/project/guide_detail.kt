@@ -332,10 +332,10 @@ class guide_detail : AppCompatActivity(), OnMapReadyCallback {
         if (query.length >= 5) {
             var dataBarus = dataBaru(
                 city = query.toString(),
-                latitude = 0.0,
-                longitude = 0.0,
+                latitude = 40.7188,
+                longitude = -74.012,
                 name = query.toString(),
-                price = 0,
+                price = 100000,
                 province = query.toString(),
                 state = query.toString()
             )
