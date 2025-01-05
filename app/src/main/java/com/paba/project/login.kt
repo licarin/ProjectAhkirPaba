@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 
 class login : AppCompatActivity() {
@@ -29,7 +30,14 @@ class login : AppCompatActivity() {
                 if (result.exists()) {
                     val data = result.data
                     if (data?.get("password") == password) {
+<<<<<<< Updated upstream
                         startActivity(Intent(this, home::class.java))
+=======
+                        val intent = Intent(this, home::class.java)
+                        intent.putExtra("email", email)
+                        TambahDataHistory(db, email)
+                        startActivity(intent)
+>>>>>>> Stashed changes
                     } else {
                         loginAlertDialog.show()
                         Log.d("Firebase", "Password salah atau email salah")
@@ -82,5 +90,18 @@ class login : AppCompatActivity() {
             }
         }
 
+    }
+    fun TambahDataHistory(db: FirebaseFirestore,
+                          email: String) {
+        val dataBaru = HistoryLogin(email)
+        db.collection("tbHistory")
+            .document(dataBaru.email)
+            .set(dataBaru)
+            .addOnSuccessListener {
+                Log.d("Firebase", "Data berhasil ditambahkan")
+            }
+            .addOnFailureListener {
+                Log.d("Firebase", it.message.toString())
+            }
     }
 }
