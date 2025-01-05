@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".f_main_search">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Chip Filter -->
+            <LinearLayout
+                android:id="@+id/chipFilter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <Button
+                    android:id="@+id/btnBali"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#E2ECF5"
+                    android:textColor="#0A1D3D"
+                    android:textStyle="bold"
+                    android:text="Bali" />
+
+                <Button
+                    android:id="@+id/btnsby"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Surabaya"
+                    android:backgroundTint="#E2ECF5"
+                    android:textColor="#0A1D3D"
+                    android:textStyle="bold"
+                    android:layout_marginStart="8dp" />
+
+                <Button
+                    android:id="@+id/btnjkt"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jakarta"
+                    android:backgroundTint="#E2ECF5"
+                    android:textColor="#0A1D3D"
+                    android:textStyle="bold"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+
+            <!-- Popular Text -->
+            <TextView
+                android:id="@+id/popularText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
+                android:text="Popular"
+                android:textColor="#0A1D3D"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/chipFilter"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <!-- Jakarta Section -->
+            <FrameLayout
+                android:id="@+id/jakartaSection"
+                android:layout_width="184dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/popularText"
+                app:layout_constraintStart_toStartOf="@id/popularText">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/jkt_img"
+                    android:background="@drawable/rounded_corner"
+                    android:clipToOutline="true"
+                    android:contentDescription="Jakarta" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="8dp"
+                    android:padding="4dp"
+                    android:text="Jakarta"
+                    android:textColor="#FFFBFB"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <!-- Surabaya Section -->
+            <FrameLayout
+                android:id="@+id/surabayaSection"
+                android:layout_width="184dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintTop_toTopOf="@id/jakartaSection"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/sby_img"
+                    android:background="@drawable/rounded_corner"
+                    android:clipToOutline="true"
+                    android:contentDescription="Surabaya" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="8dp"
+                    android:padding="4dp"
+                    android:text="Surabaya"
+                    android:textColor="#FFFBFB"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <!-- Bandung Section -->
+            <FrameLayout
+                android:id="@+id/bandungSection"
+                android:layout_width="184dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/jakartaSection"
+                app:layout_constraintStart_toStartOf="@id/jakartaSection">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bdg_img"
+                    android:background="@drawable/rounded_corner"
+                    android:clipToOutline="true"
+                    android:contentDescription="Bandung" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="8dp"
+                    android:padding="4dp"
+                    android:text="Bandung"
+                    android:textColor="#FFFBFB"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <!-- Bali Section -->
+            <FrameLayout
+                android:id="@+id/baliSection"
+                android:layout_width="184dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/surabayaSection"
+                app:layout_constraintEnd_toEndOf="@id/surabayaSection">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/rounded_corner"
+                    android:clipToOutline="true"
+                    android:src="@drawable/bali_img"
+                    android:contentDescription="Bali" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="8dp"
+                    android:padding="4dp"
+                    android:text="Bali"
+                    android:textColor="#FFFBFB"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <!-- Yogyakarta Section -->
+            <FrameLayout
+                android:id="@+id/yogyakartaSection"
+                android:layout_width="184dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/bandungSection"
+                app:layout_constraintStart_toStartOf="@id/bandungSection">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ygk_img"
+                    android:background="@drawable/rounded_corner"
+                    android:clipToOutline="true"
+                    android:contentDescription="Yogyakarta" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="8dp"
+                    android:padding="4dp"
+                    android:text="Yogyakarta"
+                    android:textColor="#FFFBFB"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <!-- Medan Section -->
+            <FrameLayout
+                android:id="@+id/medanSection"
+                android:layout_width="184dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/baliSection"
+                app:layout_constraintEnd_toEndOf="@id/baliSection">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/mdn_img"
+                    android:background="@drawable/rounded_corner"
+                    android:clipToOutline="true"
+                    android:contentDescription="Medan" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="8dp"
+                    android:padding="4dp"
+                    android:text="Medan"
+                    android:textColor="#FFFBFB"
+                    android:textStyle="bold" />
+            </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</FrameLayout>

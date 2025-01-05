@@ -317,10 +317,6 @@ class book_detail : AppCompatActivity(), OnMapReadyCallback {
         btnBook.setOnClickListener {
             val loaderFragment = LoaderFragment()
             val email = intent.getStringExtra("email")
-            if (postalCodeTour.isEmpty() || postalCodeTour == "Postal code not available") {
-                Toast.makeText(this, "Please select a location to retrieve postal code.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
             Log.d("email", "email: $email")
             loaderFragment.isCancelable = false
             loaderFragment.show(supportFragmentManager, "loader")

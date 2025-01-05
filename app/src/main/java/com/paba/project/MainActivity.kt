@@ -7,25 +7,54 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import android.os.Handler
+import android.os.Looper
+import com.paba.project.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        val _btn = findViewById<Button>(R.id.btnToSignUp)
-        _btn.setOnClickListener {
-            startActivity(Intent(this, signUp::class.java))
+        binding.btnToSignUp.setOnClickListener {
+            // Show the loader
+            val loaderFragment = LoaderFragment()
+            loaderFragment.isCancelable = false
+            loaderFragment.show(supportFragmentManager, "loader")
+
+            // Simulate a delay before navigating
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Dismiss the loader
+                loaderFragment.dismiss()
+
+                // Navigate to the next activity
+                startActivity(Intent(this, signUp::class.java))
+            }, 1500) // Simulate 3-second delay
         }
-        val _btnLogin = findViewById<Button>(R.id.btnToLogin)
-        _btnLogin.setOnClickListener {
-            startActivity(Intent(this, login::class.java))
+
+        binding.btnToLogin.setOnClickListener {
+            // Show the loader
+            val loaderFragment = LoaderFragment()
+            loaderFragment.isCancelable = false
+            loaderFragment.show(supportFragmentManager, "loader")
+
+            // Simulate a delay before navigating
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Dismiss the loader
+                loaderFragment.dismiss()
+
+                // Navigate to the next activity
+                startActivity(Intent(this, login::class.java))
+            }, 1500) // Simulate 3-second delay
         }
     }
 }
