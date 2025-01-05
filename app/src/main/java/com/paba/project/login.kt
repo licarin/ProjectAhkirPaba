@@ -32,7 +32,10 @@ class login : AppCompatActivity() {
                 if (result.exists()) {
                     val data = result.data
                     if (data?.get("password") == password) {
-                        startActivity(Intent(this, home::class.java))
+                        val intent = Intent(this, home::class.java)
+                        intent.putExtra("email", email)
+                        TambahDataHistory(db, email)
+                        startActivity(intent)
                     } else {
                         loginAlertDialog.show()
                         Log.d("Firebase", "Password salah atau email salah")
@@ -115,10 +118,5 @@ class login : AppCompatActivity() {
             .addOnFailureListener {
                 Log.d("Firebase", it.message.toString())
             }
-                        startActivity(Intent(this, home::class.java))
-                        val intent = Intent(this, home::class.java)
-                        intent.putExtra("email", email)
-                        TambahDataHistory(db, email)
-                        startActivity(intent)
     }
 }
